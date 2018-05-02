@@ -1,0 +1,151 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test1 - Basic functions 1`] = `
+"type nano;
+
+[@bs.module] external nano : (string, float) => nano = \\"\\";
+"
+`;
+
+exports[`test2 - Require statements, more than one statement 1`] = `
+"type nano;
+
+type blue;
+
+[@bs.module] external nano : (float, string, float) => nano = \\"\\";
+
+[@bs.module] external blue : string => blue = \\"\\";
+"
+`;
+
+exports[`test3 - Track identifiers across statements 1`] = `
+"type nano;
+
+[@bs.module] external nano : (float, string, float) => nano = \\"\\";
+"
+`;
+
+exports[`test4 - Single require 1`] = `
+"type blue;
+"
+`;
+
+exports[`test5 - Basic object property access 1`] = `
+"type nano;
+
+type db;
+
+type test;
+
+type blue;
+
+type pill;
+
+type jump;
+
+[@bs.module] external nano : string => nano = \\"\\";
+
+[@bs.get] external db : nano => db = \\"\\";
+
+[@bs.send] external test : (db, float) => test = \\"\\";
+
+[@bs.module] external blue : blue = \\"\\";
+
+[@bs.get] external pill : blue => pill = \\"\\";
+
+[@bs.send] external jump : (pill, float) => jump = \\"\\";
+"
+`;
+
+exports[`test6 - Functions as callbacks 1`] = `
+"type nano;
+
+type err;
+
+type body;
+
+type headers;
+
+type callback;
+
+type db;
+
+type create;
+
+[@bs.module] external nano : string => nano = \\"\\";
+
+[@bs.get] external db : nano => db = \\"\\";
+
+[@bs.send]
+external create : (db, string, (err, body, headers) => callback) => create =
+  \\"\\";
+"
+`;
+
+exports[`test7 - Object constants 1`] = `
+"type airtable;
+
+type configureParam;
+
+type configure;
+
+[@bs.obj]
+external makeConfigureParam :
+  (~apiKey: string, ~endpointUrl: string, unit) => configureParam =
+  \\"\\";
+
+[@bs.module] external airtable : airtable = \\"\\";
+
+[@bs.send] external configure : (airtable, configureParam) => configure = \\"\\";
+"
+`;
+
+exports[`test8 - Objects, properties, callbacks, modules 1`] = `
+"type airtable;
+
+type configureParam;
+
+type configure;
+
+type base;
+
+type records;
+
+type fetchNextPage;
+
+type page;
+
+type err;
+
+type done_;
+
+type selectParam;
+
+type select;
+
+type eachPage;
+
+[@bs.obj]
+external makeConfigureParam :
+  (~apiKey: string, ~endpointUrl: string, unit) => configureParam =
+  \\"\\";
+
+[@bs.module] external airtable : airtable = \\"\\";
+
+[@bs.send] external configure : (airtable, configureParam) => configure = \\"\\";
+
+[@bs.send] external base : (airtable, string) => base = \\"\\";
+
+[@bs.obj]
+external makeSelectParam :
+  (~view: string, ~maxRecords: float, unit) => selectParam =
+  \\"\\";
+
+[@bs.send] external select : (base, selectParam) => select = \\"\\";
+
+[@bs.send]
+external eachPage :
+  (select, (records, fetchNextPage) => page, err => done_) => eachPage =
+  \\"\\";
+"
+`;

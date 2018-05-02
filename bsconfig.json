@@ -1,0 +1,75 @@
+{
+  "name": "rebind",
+  "version": "0.0.1",
+  "bs-dev-dependencies": ["@glennsl/bs-jest"],
+  "generators": [
+    {
+      "name": "ocamllex",
+      "command": "ocamllex $in"
+    }
+  ],
+  "sources": [
+    {
+      "dir": "node_modules/bs-platform/vendor/ocaml/parsing",
+      "files": [
+        "ast_helper.mli",
+        "ast_helper.ml",
+        "asttypes.mli",
+        "docstrings.mli",
+        "docstrings.ml",
+        "location.mli",
+        "location.ml",
+        "longident.mli",
+        "parsetree.mli"
+      ]
+    },
+    {
+      "dir": "node_modules/bs-platform/vendor/ocaml/utils",
+      "files": [
+        "clflags.mli",
+        "clflags.ml",
+        "config.mli",
+        "config.ml",
+        "misc.mli",
+        "misc.ml",
+        "terminfo.mli",
+        "warnings.mli",
+        "warnings.ml"
+      ]
+    },
+    {
+      "dir": "src",
+      "subdirs": [
+        {
+          "dir": "shared"
+        },
+        {
+          "dir": "js"
+        }
+      ]
+    },
+    {
+      "dir": "__tests__",
+      "type": "dev"
+    },
+    {
+      "dir": "vendor",
+      "generators": [
+        {
+          "name": "ocamllex",
+          "edge": ["lexer_flow.ml", ":", "lexer_flow.mll"]
+        }
+      ]
+    }
+  ],
+  "package-specs": {
+    "module": "commonjs",
+    "in-source": true
+  },
+  "suffix": ".bs.js",
+  "warnings": {
+    "error": "+101"
+  },
+  "namespace": true,
+  "refmt": 3
+}

@@ -1,0 +1,28 @@
+{
+  "name": "rebind",
+  "version": "0.0.1",
+  "license": "MIT",
+  "description": "Experimental automated generation of Reason/BuckleScript bindings from JavaScript code.",
+  "main": "main.re",
+  "dependencies": {},
+  "bin": {
+    "rebind": "./_build/src/native/Main.native"
+  },
+  "jest": {
+    "testPathIgnorePatterns": ["<rootDir>/__tests__/input/", "<rootDir>/node_modules/"]
+  },
+  "scripts": {
+    "build": "rebuild -no-hygiene -X lib -I vendor -I src/shared -no-links -package compiler-libs.common -package unix ./src/native/Main.native",
+    "build:js": "bsb -make-world",
+    "clean:js": "bsb -clean-world",
+    "start": "./_build/src/native/Main.native ./__tests__/input/001.test.js | refmt --parse binary --print re",
+    "start:js": "node ./src/js/Main.bs.js ./__tests__/input/007.test.js",
+    "getReasonAst": "refmt --print ast ./getReasonAst.re",
+    "preinstall": "npm run build",
+    "test": "npm run build && jest"
+  },
+  "devDependencies": {
+    "@glennsl/bs-jest": "^0.4.2",
+    "bs-platform": "^3.0.0"
+  }
+}

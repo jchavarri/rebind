@@ -1,0 +1,1 @@
+const blue = require('blue');
