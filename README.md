@@ -44,7 +44,11 @@ Potentially, at some point in the future, Rebind could be integrated with editor
 
 ## Install
 
-1. From the terminal: `npm install https://github.com/jchavarri/rebind.git -g`
+1. From your terminal:
+```bash
+git clone https://github.com/jchavarri/rebind
+npm install -g .
+```
 1. Rebind needs `refmt` to output the Reason/OCaml code, so you will have to follow the instructions from the [official Reason docs](https://reasonml.github.io/docs/en/global-installation.html) to get it installed.
 
 ## Running
