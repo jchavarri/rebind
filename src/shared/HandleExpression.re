@@ -24,7 +24,14 @@ let maybeAddIdentifier = (state, name) => {
     | Some(existingType) => (existingType, state.outputTypes)
     | None => (Abstract(name), [name, ...state.outputTypes])
     };
-  ({...state, outputTypes}, lastType);
+  (
+    {
+      ...state,
+      outputTypes,
+      identifiers: Identifiers.add(name, lastType, state.identifiers),
+    },
+    lastType,
+  );
 };
 
 /*
@@ -62,6 +69,11 @@ let addExternal = (state, externalAttr, name, inputTypes) => {
     | ObjectCreation => String.concat("", ["make", String.capitalize(name)])
     | _ => name
     };
+  /* Add the potential `make*` identifier */
+  let state = {
+    ...state,
+    identifiers: Identifiers.add(name, lastType, state.identifiers),
+  };
   /* TODO: Try to match params with existing externals */
   let existingExternal =
     Utils.tryFindInList(e => e.name == name, state.outputExternals);
@@ -208,7 +220,12 @@ let rec h = (state, (_, expression)) =>
            },
            (state, []),
          );
-    addExternal(state, ObjectCreation, state.parentContextName, objTypes @ [Unit]);
+    addExternal(
+      state,
+      ObjectCreation,
+      state.parentContextName,
+      objTypes @ [Unit],
+    );
   | This
   | Super
   | Array(_)

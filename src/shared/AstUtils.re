@@ -43,15 +43,13 @@ let astHelperStrLidIdent = (~correct=true, a) =>
   | [] => raise(Invalid_argument("identifier is empty."))
   | _ =>
     let inner =
-      Lident(correct ? correctIdentifier(List.hd(a)) : List.hd(a));
+      Lident(List.hd(a));
     let res =
       List.tl(a)
       |> List.fold_left(
            (acc, curr) =>
-             Ldot(acc, correct ? correctIdentifier(curr) : curr),
+             Ldot(acc, curr),
            inner,
          );
     {loc: default_loc.contents, txt: res};
   };
-
-let placeholder = s => Str.eval(Exp.ident(astHelperStrLidIdent([s])));
