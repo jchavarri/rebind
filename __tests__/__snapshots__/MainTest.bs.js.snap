@@ -83,7 +83,7 @@ external create : (db, string, (err, body, headers) => callback) => create =
 `;
 
 exports[`test7 - Object constants 1`] = `
-"type airtable;
+"type airtable2;
 
 type configureParam;
 
@@ -94,14 +94,14 @@ external makeConfigureParam :
   (~apiKey: string, ~endpointUrl: string, unit) => configureParam =
   \\"\\";
 
-[@bs.module] external airtable : airtable = \\"\\";
+[@bs.module] external airtable : airtable2 = \\"\\";
 
-[@bs.send] external configure : (airtable, configureParam) => configure = \\"\\";
+[@bs.send] external configure : (airtable2, configureParam) => configure = \\"\\";
 "
 `;
 
 exports[`test8 - Objects, properties, callbacks, modules 1`] = `
-"type airtable;
+"type airtable2;
 
 type configureParam;
 
@@ -130,11 +130,11 @@ external makeConfigureParam :
   (~apiKey: string, ~endpointUrl: string, unit) => configureParam =
   \\"\\";
 
-[@bs.module] external airtable : airtable = \\"\\";
+[@bs.module] external airtable : airtable2 = \\"\\";
 
-[@bs.send] external configure : (airtable, configureParam) => configure = \\"\\";
+[@bs.send] external configure : (airtable2, configureParam) => configure = \\"\\";
 
-[@bs.send] external base : (airtable, string) => base = \\"\\";
+[@bs.send] external base : (airtable2, string) => base = \\"\\";
 
 [@bs.obj]
 external makeSelectParam :
@@ -147,5 +147,20 @@ external makeSelectParam :
 external eachPage :
   (select, (records, fetchNextPage) => page, err => done_) => eachPage =
   \\"\\";
+"
+`;
+
+exports[`test9 - Identifiers with same name 1`] = `
+"type jPush;
+
+type jPush2;
+
+type initPush;
+
+[@bs.module] external jPush : jPush = \\"\\";
+
+[@bs.get] external jPush2 : jPush => jPush2 = \\"jPush\\";
+
+[@bs.send] external initPush : jPush2 => initPush = \\"\\";
 "
 `;

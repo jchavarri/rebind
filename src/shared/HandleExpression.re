@@ -44,7 +44,7 @@ let maybeAddModule = (state, name) => {
   let (state, lastType) = maybeAddIdentifier(state, name);
   let existingModule =
     Utils.tryFindInList(
-      e => e.name == name && e.attr == Module,
+      e => e.name == name && (e.attr == Module || e.attr == Get || e.attr == Send),
       state.outputExternals,
     );
   switch (existingModule) {

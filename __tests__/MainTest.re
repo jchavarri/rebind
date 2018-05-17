@@ -53,3 +53,9 @@ Expect.(
     expect(getOutput("008.test")) |> toMatchSnapshot
   )
 );
+
+Expect.(
+  test("test9 - Identifiers with same name", () =>
+    expect(getOutput("009.test")) |> toMatchSnapshot
+  )
+);
