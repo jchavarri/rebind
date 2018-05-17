@@ -59,3 +59,9 @@ Expect.(
     expect(getOutput("009.test")) |> toMatchSnapshot
   )
 );
+
+Expect.(
+  test("test10 - Stripe example", () =>
+    expect(getOutput("010.test")) |> toMatchSnapshot
+  )
+);

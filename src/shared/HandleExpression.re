@@ -18,11 +18,15 @@ let getLastType = ((_state, lastType)) => lastType;
 
 let getState = ((state, _lastType)) => state;
 
-let maybeAddIdentifier = (state, name) => {
+let maybeAddIdentifier = (~isModule=?, state, name) => {
   let (lastType, outputTypes) =
     switch (Utils.tryFindId(name, state.identifiers)) {
     | Some(existingType) => (existingType, state.outputTypes)
-    | None => (Abstract(name), [name, ...state.outputTypes])
+    | None => (
+        Utils.getWithDefault(isModule, false) ?
+          Module(name) : Abstract(name),
+        [name, ...state.outputTypes],
+      )
     };
   (
     {
@@ -34,35 +38,7 @@ let maybeAddIdentifier = (state, name) => {
   );
 };
 
-/*
-   Modules are generally created lazily when a function is found to reduce output code.
-   But because of this laziness, for modules that export an object,
-   we might reach the identifier of a member expression and not have the
-   module export available, so we create it at that point. That's what `maybeAddModule` is for.
- */
-let maybeAddModule = (state, name) => {
-  let (state, lastType) = maybeAddIdentifier(state, name);
-  let existingModule =
-    Utils.tryFindInList(
-      e => e.name == name && (e.attr == Module || e.attr == Get || e.attr == Send),
-      state.outputExternals,
-    );
-  switch (existingModule) {
-  | Some(_) => (state, lastType)
-  | None => (
-      {
-        ...state,
-        outputExternals: [
-          {attr: Module, name, types: [lastType]},
-          ...state.outputExternals,
-        ],
-      },
-      lastType,
-    )
-  };
-};
-
-let addExternal = (state, externalAttr, name, inputTypes) => {
+let maybeAddExternal = (state, externalAttr, name, inputTypes) => {
   let (state, lastType) = maybeAddIdentifier(state, name);
   let name =
     switch (externalAttr) {
@@ -127,7 +103,11 @@ let rec h = (state, (_, expression)) =>
            (state, []),
          );
     (maybeAddIdentifier(state, funName) |> getState, Fun(funName, types));
-  | Identifier((_, name)) => maybeAddModule(state, name)
+  | Identifier((_, name)) =>
+    switch (Utils.tryFindId(name, state.identifiers)) {
+    | Some(Module(n)) => maybeAddExternal(state, Module, n, [])
+    | _ => maybeAddIdentifier(state, name)
+    }
   | Literal(lit) => HandleLiteral.h(state, lit)
   | Call({callee: (calleeLoc, calleeExp), arguments}) =>
     let calleeName =
@@ -166,15 +146,20 @@ let rec h = (state, (_, expression)) =>
         /* Discard the input types of this expression -they'll be just the string inside `require`-,
            and pick the ones passed from above in the state */
         List.length(state.rightSideTypes) > 0 ?
-          addExternal(state, Module, requireType, state.rightSideTypes) :
-          maybeAddIdentifier(state, requireType)
-      | _ => addExternal(state, Module, name, rightSideTypes)
+          maybeAddExternal(state, Module, requireType, state.rightSideTypes) :
+          maybeAddIdentifier(~isModule=true, state, requireType)
+      | _ =>
+        switch (Utils.tryFindId(name, state.identifiers)) {
+        | Some(Module(n)) =>
+          maybeAddExternal(state, Module, n, rightSideTypes)
+        | _ => maybeAddExternal(state, Val, name, rightSideTypes)
+        }
       }
     | Member({_object, property, computed: _}) =>
       let (objectState, objectLastType) = h(state, _object);
       switch (property) {
       | Member.PropertyIdentifier((_, name)) =>
-        addExternal(
+        maybeAddExternal(
           objectState,
           Send,
           name,
@@ -188,12 +173,16 @@ let rec h = (state, (_, expression)) =>
   | Member({_object, property, computed: _}) =>
     let (objectState, objectLastType) =
       switch (_object) {
-      | (_, Identifier((_, name))) => addExternal(state, Module, name, [])
+      | (_, Identifier((_, name))) =>
+        switch (Utils.tryFindId(name, state.identifiers)) {
+        | Some(Module(n)) => maybeAddExternal(state, Module, n, [])
+        | _ => maybeAddExternal(state, Val, name, [])
+        }
       | _ => h(state, _object)
       };
     switch (property) {
     | Member.PropertyIdentifier((_, name)) =>
-      addExternal(objectState, Get, name, [objectLastType])
+      maybeAddExternal(objectState, Get, name, [objectLastType])
     | PropertyExpression(_) => failwith("Member.PropertyExpression")
     };
   | Object(obj) =>
@@ -220,7 +209,7 @@ let rec h = (state, (_, expression)) =>
            },
            (state, []),
          );
-    addExternal(
+    maybeAddExternal(
       state,
       ObjectCreation,
       state.parentContextName,

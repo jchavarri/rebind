@@ -4,13 +4,15 @@ type externalBaseType =
   | Abstract(string)
   | Unit
   | Named(string, externalBaseType)
-  | Fun(string, list(externalBaseType));
+  | Fun(string, list(externalBaseType))
+  | Module(string); /* Just a helper to identify somehow expressions like require('something') */
 
 type externalStatementAttr =
   | Module
   | Get
   | Send
-  | ObjectCreation;
+  | ObjectCreation
+  | Val;
 
 type externalStatement = {
   attr: externalStatementAttr,

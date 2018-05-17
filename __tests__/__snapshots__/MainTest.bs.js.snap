@@ -3,7 +3,7 @@
 exports[`test1 - Basic functions 1`] = `
 "type nano;
 
-[@bs.module] external nano : (string, float) => nano = \\"\\";
+[@bs.val] external nano : (string, float) => nano = \\"Nano\\";
 "
 `;
 
@@ -94,7 +94,7 @@ external makeConfigureParam :
   (~apiKey: string, ~endpointUrl: string, unit) => configureParam =
   \\"\\";
 
-[@bs.module] external airtable : airtable2 = \\"\\";
+[@bs.module] external airtable2 : airtable2 = \\"airtable\\";
 
 [@bs.send] external configure : (airtable2, configureParam) => configure = \\"\\";
 "
@@ -130,7 +130,7 @@ external makeConfigureParam :
   (~apiKey: string, ~endpointUrl: string, unit) => configureParam =
   \\"\\";
 
-[@bs.module] external airtable : airtable2 = \\"\\";
+[@bs.module] external airtable2 : airtable2 = \\"airtable\\";
 
 [@bs.send] external configure : (airtable2, configureParam) => configure = \\"\\";
 
@@ -157,10 +157,39 @@ type jPush2;
 
 type initPush;
 
-[@bs.module] external jPush : jPush = \\"\\";
+[@bs.val] external jPush : jPush = \\"JPush\\";
 
 [@bs.get] external jPush2 : jPush => jPush2 = \\"jPush\\";
 
 [@bs.send] external initPush : jPush2 => initPush = \\"\\";
+"
+`;
+
+exports[`test10 - Stripe example 1`] = `
+"type stripe;
+
+type createParam;
+
+type err;
+
+type customer;
+
+type callback;
+
+type customers;
+
+type create;
+
+[@bs.module] external stripe : string => stripe = \\"\\";
+
+[@bs.obj]
+external makeCreateParam : (~email: string, unit) => createParam = \\"\\";
+
+[@bs.get] external customers : stripe => customers = \\"\\";
+
+[@bs.send]
+external create :
+  (customers, createParam, (err, customer) => callback) => create =
+  \\"\\";
 "
 `;

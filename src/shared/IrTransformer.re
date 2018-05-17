@@ -5,10 +5,12 @@ open Parsetree;
 open SharedTypes;
 
 module OrigToSafeMap = Map.Make(String);
+
 let findWithDefault = (x, xs) =>
   try (SharedTypes.Identifiers.find(x, xs)) {
   | Not_found => x
   };
+
 module SafeToOrigMap = Map.Make(String);
 
 let externalTypeToString = t =>
@@ -19,8 +21,9 @@ let externalTypeToString = t =>
   | Unit => "unit"
   | Fun(_, _) =>
     failwith(
-      "Function type should be resolved before calling externalTypeToString",
+      "Fun type should be resolved before calling externalTypeToString",
     )
+  | Module(n) => n
   | Named(_, _) =>
     failwith(
       "Named type should be resolved before calling externalTypeToString",
@@ -55,7 +58,12 @@ let typeFromExternalTypes = (typesList, safeIds) => {
         let funTypes = l @ [Abstract(findWithDefault(name, safeIds))];
         process(xl, Some(typeArrow(rootType(funTypes), a, "")));
       | ([Named(name, type_), ...xl], Some(a)) =>
-        process(xl, Some(typeArrow(rootType([type_]), a, findWithDefault(name, safeIds))))
+        process(
+          xl,
+          Some(
+            typeArrow(rootType([type_]), a, findWithDefault(name, safeIds)),
+          ),
+        )
       | (
           [a, ...xl],
           Some({
@@ -109,17 +117,19 @@ let typeFromExternalTypes = (typesList, safeIds) => {
   rootType(typesList);
 };
 
-let externalWithAttribute = (name, types, safeIds, attr) =>
+let externalWithAttribute = (name, types, safeIds, attr) => {
+  let newName = OrigToSafeMap.find(name, safeIds);
   Str.primitive({
     pval_name: {
       loc: default_loc.contents,
-      txt: OrigToSafeMap.find(name, safeIds),
+      txt: newName,
     },
-    pval_prim: [""],
+    pval_prim: [newName == name ? "" : name],
     pval_loc: default_loc.contents,
     pval_type: typeFromExternalTypes(types, safeIds),
     pval_attributes: [({loc: default_loc.contents, txt: attr}, PStr([]))],
   });
+};
 
 let rec generateSafeId = (~postFix=None, name, safeToOrig) => {
   let strPostFix =
@@ -161,20 +171,17 @@ let transform = state => {
   let safeIds = safeIdentifiers(identifiers);
   (
     List.rev(outputTypes)
-    |> List.map(structureItem =>
-         switch (structureItem) {
-         | name =>
-           Str.type_([
-             Type.mk(
-               ~kind=Ptype_abstract,
-               ~priv=Public,
-               {
-                 loc: default_loc.contents,
-                 txt: OrigToSafeMap.find(name, safeIds),
-               },
-             ),
-           ])
-         }
+    |> List.map(outputType =>
+         Str.type_([
+           Type.mk(
+             ~kind=Ptype_abstract,
+             ~priv=Public,
+             {
+               loc: default_loc.contents,
+               txt: OrigToSafeMap.find(outputType, safeIds),
+             },
+           ),
+         ])
        )
   )
   @ (
@@ -191,6 +198,7 @@ let transform = state => {
          | Send => externalOfType("bs.send")
          | Get => externalOfType("bs.get")
          | ObjectCreation => externalOfType("bs.obj")
+         | Val => externalOfType("bs.val")
          };
        })
   );

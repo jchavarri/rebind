@@ -13,6 +13,12 @@ let optMap = (opt, f, def) =>
   | None => def
   };
 
+let getWithDefault = (opt, def) =>
+  switch (opt) {
+  | Some(c) => c
+  | None => def
+  };
+
 let tryFindId = (x, xs) =>
   try (Some(SharedTypes.Identifiers.find(x, xs))) {
   | Not_found => None
