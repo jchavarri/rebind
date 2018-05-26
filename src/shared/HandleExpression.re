@@ -2,6 +2,10 @@ open Parser_flow.Ast.Expression;
 
 open SharedTypes;
 
+type callableExpr =
+  | CallExpr
+  | NewExpr;
+
 let isStringType = t =>
   switch (t) {
   | String(_) => true
@@ -71,7 +75,68 @@ let maybeAddExternal = (state, externalAttr, name, inputTypes) => {
   };
 };
 
-let rec h = (state, (_, expression)) =>
+let rec handleCallableExpr = (exprType, callee, arguments, state) => {
+  let (calleeLoc, calleeExp) = callee;
+  let calleeName =
+    switch (calleeExp) {
+    | Identifier((_, name)) => name
+    | Member({
+        _object,
+        property: Member.PropertyIdentifier((_, name)),
+        computed: _,
+      }) => name
+    | _ => ""
+    };
+  let (state, rightSideTypes) =
+    arguments
+    |> List.fold_left(
+         ((accState, accTypes), argument) =>
+           switch (argument) {
+           | Expression(e) =>
+             let (accState, lastType) = h(accState, e);
+             (accState, accTypes @ [lastType]);
+           | Spread((_, _)) => failwith("Call.argument.Spread")
+           },
+         (
+           {
+             ...state,
+             parentContextName: String.concat("", [calleeName, "Param"]),
+           },
+           [],
+         ),
+       );
+  switch (calleeExp) {
+  /* Maybe this shouldn't be nested here, and the recursion should continue... */
+  | Identifier((_, name)) =>
+    switch (name, rightSideTypes) {
+    | ("require", [String(requireType)]) =>
+      /* Discard the input types of this expression -they'll be just the string inside `require`-,
+         and pick the ones passed from above in the state */
+      List.length(state.rightSideTypes) > 0 ?
+        maybeAddExternal(state, Module, requireType, state.rightSideTypes) :
+        maybeAddIdentifier(~isModule=true, state, requireType)
+    | _ =>
+      switch (exprType, Utils.tryFindId(name, state.identifiers)) {
+      | (NewExpr, _) => maybeAddExternal(state, NewAttr, name, rightSideTypes)
+      | (_, Some(Module(n))) => maybeAddExternal(state, Module, n, rightSideTypes)
+      | (_, _) => maybeAddExternal(state, Val, name, rightSideTypes)
+      }
+    }
+  | Member({_object, property, computed: _}) =>
+    let (objectState, objectLastType) = h(state, _object);
+    switch (property) {
+    | Member.PropertyIdentifier((_, name)) =>
+      maybeAddExternal(
+        objectState,
+        Send,
+        name,
+        [objectLastType] @ rightSideTypes,
+      )
+    | Member.PropertyExpression(_) => failwith("Member.PropertyExpression")
+    };
+  | _ => h({...state, rightSideTypes}, (calleeLoc, calleeExp))
+  };
+} and h = (state, (_, expression)) =>
   switch (expression) {
   | Function(f)
   | ArrowFunction(f) =>
@@ -109,66 +174,8 @@ let rec h = (state, (_, expression)) =>
     | _ => maybeAddIdentifier(state, name)
     }
   | Literal(lit) => HandleLiteral.h(state, lit)
-  | Call({callee: (calleeLoc, calleeExp), arguments}) =>
-    let calleeName =
-      switch (calleeExp) {
-      | Identifier((_, name)) => name
-      | Member({
-          _object,
-          property: Member.PropertyIdentifier((_, name)),
-          computed: _,
-        }) => name
-      | _ => ""
-      };
-    let (state, rightSideTypes) =
-      arguments
-      |> List.fold_left(
-           ((accState, accTypes), argument) =>
-             switch (argument) {
-             | Expression(e) =>
-               let (accState, lastType) = h(accState, e);
-               (accState, accTypes @ [lastType]);
-             | Spread((_, _)) => failwith("Call.argument.Spread")
-             },
-           (
-             {
-               ...state,
-               parentContextName: String.concat("", [calleeName, "Param"]),
-             },
-             [],
-           ),
-         );
-    switch (calleeExp) {
-    /* Maybe this shouldn't be nested here, and the recursion should continue... */
-    | Identifier((_, name)) =>
-      switch (name, rightSideTypes) {
-      | ("require", [String(requireType)]) =>
-        /* Discard the input types of this expression -they'll be just the string inside `require`-,
-           and pick the ones passed from above in the state */
-        List.length(state.rightSideTypes) > 0 ?
-          maybeAddExternal(state, Module, requireType, state.rightSideTypes) :
-          maybeAddIdentifier(~isModule=true, state, requireType)
-      | _ =>
-        switch (Utils.tryFindId(name, state.identifiers)) {
-        | Some(Module(n)) =>
-          maybeAddExternal(state, Module, n, rightSideTypes)
-        | _ => maybeAddExternal(state, Val, name, rightSideTypes)
-        }
-      }
-    | Member({_object, property, computed: _}) =>
-      let (objectState, objectLastType) = h(state, _object);
-      switch (property) {
-      | Member.PropertyIdentifier((_, name)) =>
-        maybeAddExternal(
-          objectState,
-          Send,
-          name,
-          [objectLastType] @ rightSideTypes,
-        )
-      | Member.PropertyExpression(_) => failwith("Member.PropertyExpression")
-      };
-    | _ => h({...state, rightSideTypes}, (calleeLoc, calleeExp))
-    };
+  | Call({callee, arguments}) => handleCallableExpr(CallExpr, callee, arguments, state)
+  | New({callee, arguments}) => handleCallableExpr(NewExpr, callee, arguments, state)
   /* I know this duplication is ugly but yolo */
   | Member({_object, property, computed: _}) =>
     let (objectState, objectLastType) =
@@ -225,7 +232,6 @@ let rec h = (state, (_, expression)) =>
   | Update(_)
   | Logical(_)
   | Conditional(_)
-  | New(_)
   | Yield(_)
   | Comprehension(_)
   | Generator(_)

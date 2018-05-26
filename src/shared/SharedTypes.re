@@ -12,7 +12,8 @@ type externalStatementAttr =
   | Get
   | Send
   | ObjectCreation
-  | Val;
+  | Val
+  | NewAttr; /* Adding a suffix to `New` to avoid conflicts with Flow's SpiderMonkey types */
 
 type externalStatement = {
   attr: externalStatementAttr,
@@ -27,7 +28,7 @@ type state = {
   rightSideTypes: list(externalBaseType), /* The carried types in an expression */
   outputTypes: list(string),
   outputExternals: list(externalStatement),
-  parentContextName: string, 
+  parentContextName: string,
 };
 
 module type Statement = {

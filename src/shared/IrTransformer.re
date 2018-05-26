@@ -199,6 +199,7 @@ let transform = state => {
          | Get => externalOfType("bs.get")
          | ObjectCreation => externalOfType("bs.obj")
          | Val => externalOfType("bs.val")
+         | NewAttr => externalOfType("bs.new")
          };
        })
   );

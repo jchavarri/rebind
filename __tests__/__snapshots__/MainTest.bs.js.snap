@@ -193,3 +193,27 @@ external create :
   \\"\\";
 "
 `;
+
+exports[`test11 - Case with \`new\` 1`] = `
+"type graphqlEndpoint;
+
+type region;
+
+type authenticationType;
+
+type apiKey;
+
+type aWSAppSyncClientParam;
+
+type aWSAppSyncClient;
+
+[@bs.obj]
+external makeAWSAppSyncClientParam :
+  (~apiKey: apiKey, ~type: authenticationType, unit) => aWSAppSyncClientParam =
+  \\"\\";
+
+[@bs.new]
+external aWSAppSyncClient : aWSAppSyncClientParam => aWSAppSyncClient =
+  \\"AWSAppSyncClient\\";
+"
+`;

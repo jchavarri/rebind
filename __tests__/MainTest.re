@@ -65,3 +65,10 @@ Expect.(
     expect(getOutput("010.test")) |> toMatchSnapshot
   )
 );
+
+
+Expect.(
+  test("test11 - Case with `new`", () =>
+    expect(getOutput("011.test")) |> toMatchSnapshot
+  )
+);
