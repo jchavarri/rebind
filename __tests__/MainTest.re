@@ -72,3 +72,9 @@ Expect.(
     expect(getOutput("011.test")) |> toMatchSnapshot
   )
 );
+
+Expect.(
+  test("test12 - `new` from a module", () =>
+    expect(getOutput("012.test")) |> toMatchSnapshot
+  )
+);

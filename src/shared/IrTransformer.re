@@ -117,7 +117,7 @@ let typeFromExternalTypes = (typesList, safeIds) => {
   rootType(typesList);
 };
 
-let externalWithAttribute = (name, types, safeIds, attr) => {
+let externalWithAttributes = (name, types, safeIds, attrs) => {
   let newName = OrigToSafeMap.find(name, safeIds);
   Str.primitive({
     pval_name: {
@@ -127,9 +127,16 @@ let externalWithAttribute = (name, types, safeIds, attr) => {
     pval_prim: [newName == name ? "" : name],
     pval_loc: default_loc.contents,
     pval_type: typeFromExternalTypes(types, safeIds),
-    pval_attributes: [({loc: default_loc.contents, txt: attr}, PStr([]))],
+    pval_attributes:
+      attrs
+      |> List.map(attr =>
+           ({Location.loc: default_loc.contents, txt: attr}, PStr([]))
+         ),
   });
 };
+
+let externalWithAttribute = (name, types, safeIds, attr) =>
+  externalWithAttributes(name, types, safeIds, [attr]);
 
 let rec generateSafeId = (~postFix=None, name, safeToOrig) => {
   let strPostFix =
@@ -193,6 +200,12 @@ let transform = state => {
              structureItem.types,
              safeIds,
            );
+         let externalOfTypes =
+           externalWithAttributes(
+             structureItem.name,
+             structureItem.types,
+             safeIds,
+           );
          switch (structureItem.attr) {
          | Module => externalOfType("bs.module")
          | Send => externalOfType("bs.send")
@@ -200,6 +213,7 @@ let transform = state => {
          | ObjectCreation => externalOfType("bs.obj")
          | Val => externalOfType("bs.val")
          | NewAttr => externalOfType("bs.new")
+         | ModuleAndNew => externalOfTypes(["bs.new", "bs.module"])
          };
        })
   );

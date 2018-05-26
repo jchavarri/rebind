@@ -13,7 +13,8 @@ type externalStatementAttr =
   | Send
   | ObjectCreation
   | Val
-  | NewAttr; /* Adding a suffix to `New` to avoid conflicts with Flow's SpiderMonkey types */
+  | NewAttr /* Adding a suffix to `New` to avoid conflicts with Flow's SpiderMonkey types */
+  | ModuleAndNew;
 
 type externalStatement = {
   attr: externalStatementAttr,

@@ -117,8 +117,12 @@ let rec handleCallableExpr = (exprType, callee, arguments, state) => {
         maybeAddIdentifier(~isModule=true, state, requireType)
     | _ =>
       switch (exprType, Utils.tryFindId(name, state.identifiers)) {
-      | (NewExpr, _) => maybeAddExternal(state, NewAttr, name, rightSideTypes)
-      | (_, Some(Module(n))) => maybeAddExternal(state, Module, n, rightSideTypes)
+      | (NewExpr, Some(Module(n))) =>
+        maybeAddExternal(state, ModuleAndNew, n, rightSideTypes)
+      | (NewExpr, _) =>
+        maybeAddExternal(state, NewAttr, name, rightSideTypes)
+      | (_, Some(Module(n))) =>
+        maybeAddExternal(state, Module, n, rightSideTypes)
       | (_, _) => maybeAddExternal(state, Val, name, rightSideTypes)
       }
     }
@@ -136,7 +140,8 @@ let rec handleCallableExpr = (exprType, callee, arguments, state) => {
     };
   | _ => h({...state, rightSideTypes}, (calleeLoc, calleeExp))
   };
-} and h = (state, (_, expression)) =>
+}
+and h = (state, (_, expression)) =>
   switch (expression) {
   | Function(f)
   | ArrowFunction(f) =>
@@ -174,8 +179,10 @@ let rec handleCallableExpr = (exprType, callee, arguments, state) => {
     | _ => maybeAddIdentifier(state, name)
     }
   | Literal(lit) => HandleLiteral.h(state, lit)
-  | Call({callee, arguments}) => handleCallableExpr(CallExpr, callee, arguments, state)
-  | New({callee, arguments}) => handleCallableExpr(NewExpr, callee, arguments, state)
+  | Call({callee, arguments}) =>
+    handleCallableExpr(CallExpr, callee, arguments, state)
+  | New({callee, arguments}) =>
+    handleCallableExpr(NewExpr, callee, arguments, state)
   /* I know this duplication is ugly but yolo */
   | Member({_object, property, computed: _}) =>
     let (objectState, objectLastType) =

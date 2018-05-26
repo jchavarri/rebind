@@ -217,3 +217,11 @@ external aWSAppSyncClient : aWSAppSyncClientParam => aWSAppSyncClient =
   \\"AWSAppSyncClient\\";
 "
 `;
+
+exports[`test12 - \`new\` from a module 1`] = `
+"type somethingBlue;
+
+[@bs.new] [@bs.module]
+external somethingBlue : string => somethingBlue = \\"SomethingBlue\\";
+"
+`;
