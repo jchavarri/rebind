@@ -18,4 +18,5 @@ type nanoB;
 [@bs.send] external something : nanoB => string => string = "";
 let t = 2; */
 
-[@bs.obj] external makeConfig : (string, string, string) => configureParamA = "";
+[@bs.module "./student"] external studentName : string = "default";
+[@bs.module] external studentName : string = "default";

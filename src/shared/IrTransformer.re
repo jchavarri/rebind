@@ -24,6 +24,7 @@ let externalTypeToString = t =>
       "Fun type should be resolved before calling externalTypeToString",
     )
   | Module(n) => n
+  | ModuleProperty(_n, p) => p
   | Named(_, _) =>
     failwith(
       "Named type should be resolved before calling externalTypeToString",
@@ -117,8 +118,19 @@ let typeFromExternalTypes = (typesList, safeIds) => {
   rootType(typesList);
 };
 
-let externalWithAttributes = (name, types, safeIds, attrs) => {
+let externalWithAttribute = (name, types, safeIds, attr) => {
   let newName = OrigToSafeMap.find(name, safeIds);
+  let outputAttrs =
+    switch (attr) {
+    | Module => [("bs.module", None)]
+    | Send => [("bs.send", None)]
+    | Get => [("bs.get", None)]
+    | ObjectCreation => [("bs.obj", None)]
+    | Val => [("bs.val", None)]
+    | NewAttr => [("bs.new", None)]
+    | ModuleAndNew => [("bs.new", None), ("bs.module", None)]
+    | ScopedModule(name) => [("bs.module", Some(name))]
+    };
   Str.primitive({
     pval_name: {
       loc: default_loc.contents,
@@ -128,15 +140,33 @@ let externalWithAttributes = (name, types, safeIds, attrs) => {
     pval_loc: default_loc.contents,
     pval_type: typeFromExternalTypes(types, safeIds),
     pval_attributes:
-      attrs
-      |> List.map(attr =>
-           ({Location.loc: default_loc.contents, txt: attr}, PStr([]))
-         ),
+      outputAttrs
+      |> List.map(((outputAttr, constant)) => {
+           let constExpr =
+             switch (constant) {
+             | Some(c) => [
+                 {
+                   pstr_desc:
+                     Pstr_eval(
+                       {
+                         pexp_desc: Pexp_constant(Const_string(c, None)),
+                         pexp_loc: default_loc.contents,
+                         pexp_attributes: [],
+                       },
+                       [],
+                     ),
+                   pstr_loc: default_loc.contents,
+                 },
+               ]
+             | None => []
+             };
+           (
+             {Location.loc: default_loc.contents, txt: outputAttr},
+             PStr(constExpr),
+           );
+         }),
   });
 };
-
-let externalWithAttribute = (name, types, safeIds, attr) =>
-  externalWithAttributes(name, types, safeIds, [attr]);
 
 let rec generateSafeId = (~postFix=None, name, safeToOrig) => {
   let strPostFix =
@@ -193,28 +223,13 @@ let transform = state => {
   )
   @ (
     List.rev(outputExternals)
-    |> List.map(structureItem => {
-         let externalOfType =
-           externalWithAttribute(
-             structureItem.name,
-             structureItem.types,
-             safeIds,
-           );
-         let externalOfTypes =
-           externalWithAttributes(
-             structureItem.name,
-             structureItem.types,
-             safeIds,
-           );
-         switch (structureItem.attr) {
-         | Module => externalOfType("bs.module")
-         | Send => externalOfType("bs.send")
-         | Get => externalOfType("bs.get")
-         | ObjectCreation => externalOfType("bs.obj")
-         | Val => externalOfType("bs.val")
-         | NewAttr => externalOfType("bs.new")
-         | ModuleAndNew => externalOfTypes(["bs.new", "bs.module"])
-         };
-       })
+    |> List.map(structureItem =>
+         externalWithAttribute(
+           structureItem.name,
+           structureItem.types,
+           safeIds,
+           structureItem.attr,
+         )
+       )
   );
 };

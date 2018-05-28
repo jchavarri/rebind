@@ -78,3 +78,9 @@ Expect.(
     expect(getOutput("012.test")) |> toMatchSnapshot
   )
 );
+
+Expect.(
+  test("test13 - named `import`", () =>
+    expect(getOutput("013.test")) |> toMatchSnapshot
+  )
+);

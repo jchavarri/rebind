@@ -22,13 +22,12 @@ let getLastType = ((_state, lastType)) => lastType;
 
 let getState = ((state, _lastType)) => state;
 
-let maybeAddIdentifier = (~isModule=?, state, name) => {
+let maybeAddIdentifier = (~customType=?, state, name) => {
   let (lastType, outputTypes) =
     switch (Utils.tryFindId(name, state.identifiers)) {
     | Some(existingType) => (existingType, state.outputTypes)
     | None => (
-        Utils.getWithDefault(isModule, false) ?
-          Module(name) : Abstract(name),
+        Utils.getWithDefault(customType, Abstract(name)),
         [name, ...state.outputTypes],
       )
     };
@@ -114,7 +113,11 @@ let rec handleCallableExpr = (exprType, callee, arguments, state) => {
          and pick the ones passed from above in the state */
       List.length(state.rightSideTypes) > 0 ?
         maybeAddExternal(state, Module, requireType, state.rightSideTypes) :
-        maybeAddIdentifier(~isModule=true, state, requireType)
+        maybeAddIdentifier(
+          ~customType=Module(requireType),
+          state,
+          requireType,
+        )
     | _ =>
       switch (exprType, Utils.tryFindId(name, state.identifiers)) {
       | (NewExpr, Some(Module(n))) =>
@@ -123,6 +126,13 @@ let rec handleCallableExpr = (exprType, callee, arguments, state) => {
         maybeAddExternal(state, NewAttr, name, rightSideTypes)
       | (_, Some(Module(n))) =>
         maybeAddExternal(state, Module, n, rightSideTypes)
+      | (_, Some(ModuleProperty(module_, specifier))) =>
+        maybeAddExternal(
+          state,
+          ScopedModule(module_),
+          specifier,
+          rightSideTypes,
+        )
       | (_, _) => maybeAddExternal(state, Val, name, rightSideTypes)
       }
     }
@@ -176,6 +186,8 @@ and h = (state, (_, expression)) =>
   | Identifier((_, name)) =>
     switch (Utils.tryFindId(name, state.identifiers)) {
     | Some(Module(n)) => maybeAddExternal(state, Module, n, [])
+    | Some(ModuleProperty(module_, specifier)) =>
+      maybeAddExternal(state, ScopedModule(module_), specifier, [])
     | _ => maybeAddIdentifier(state, name)
     }
   | Literal(lit) => HandleLiteral.h(state, lit)
@@ -190,6 +202,8 @@ and h = (state, (_, expression)) =>
       | (_, Identifier((_, name))) =>
         switch (Utils.tryFindId(name, state.identifiers)) {
         | Some(Module(n)) => maybeAddExternal(state, Module, n, [])
+        | Some(ModuleProperty(module_, specifier)) =>
+          maybeAddExternal(state, ScopedModule(module_), specifier, [])
         | _ => maybeAddExternal(state, Val, name, [])
         }
       | _ => h(state, _object)

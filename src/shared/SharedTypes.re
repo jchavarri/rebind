@@ -5,7 +5,8 @@ type externalBaseType =
   | Unit
   | Named(string, externalBaseType)
   | Fun(string, list(externalBaseType))
-  | Module(string); /* Just a helper to identify somehow expressions like require('something') */
+  | Module(string) /* Just a helper to identify somehow expressions like require('something') */
+  | ModuleProperty(string, string); /* (moduleName, specifierName) */
 
 type externalStatementAttr =
   | Module
@@ -14,7 +15,8 @@ type externalStatementAttr =
   | ObjectCreation
   | Val
   | NewAttr /* Adding a suffix to `New` to avoid conflicts with Flow's SpiderMonkey types */
-  | ModuleAndNew;
+  | ModuleAndNew
+  | ScopedModule(string);
 
 type externalStatement = {
   attr: externalStatementAttr,

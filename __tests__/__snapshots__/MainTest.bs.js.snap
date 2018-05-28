@@ -225,3 +225,10 @@ exports[`test12 - \`new\` from a module 1`] = `
 external somethingBlue : string => somethingBlue = \\"SomethingBlue\\";
 "
 `;
+
+exports[`test13 - named \`import\` 1`] = `
+"type blue;
+
+[@bs.module \\"SomethingBlue\\"] external blue : string => blue = \\"Blue\\";
+"
+`;

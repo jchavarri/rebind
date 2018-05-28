@@ -20,6 +20,46 @@ let h = (state: SharedTypes.state, (_, statement)) => {
   | Expression({expression}) =>
     let (state, _lastType) = HandleExpression.h(state, expression);
     state;
+  | ImportDeclaration({
+      importKind,
+      source: (_loc, {raw: _, value: source}),
+      specifiers,
+    }) =>
+    switch (importKind, source) {
+    | (ImportValue, String(name)) =>
+      specifiers
+      |> List.fold_left(
+           (state, specifier) =>
+             switch (specifier) {
+             | ImportDeclaration.ImportDefaultSpecifier(_) =>
+               failwith(
+                 "Bindings to default imports are not supported by BuckleScript yet",
+               )
+             | ImportNamedSpecifier({local, remote}) =>
+               let (_loc, localName) = Utils.getWithDefault(local, remote);
+               let (_loc, remoteName) = remote;
+               let (state, _lastType) =
+                 HandleExpression.maybeAddIdentifier(
+                   ~customType=ModuleProperty(name, remoteName),
+                   state,
+                   localName,
+                 );
+               state;
+             | ImportNamespaceSpecifier((_loc, (_anotherLoc, specifierName))) =>
+               let (state, _lastType) =
+                 HandleExpression.maybeAddIdentifier(
+                   ~customType=Module(name),
+                   state,
+                   specifierName,
+                 );
+               state;
+             },
+           state,
+         )
+    | (ImportValue, _)
+    | (ImportType, _)
+    | (ImportTypeof, _) => state /* ImportType and ImportTypeof are flow imports (I think) */
+    }
   | Return(_)
   | If(_)
   | Block(_)
@@ -48,7 +88,6 @@ let h = (state: SharedTypes.state, (_, statement)) => {
   | DeclareClass(_)
   | DeclareModule(_)
   | DeclareModuleExports(_)
-  | DeclareExportDeclaration(_)
-  | ImportDeclaration(_) => state
+  | DeclareExportDeclaration(_) => state
   };
 };
