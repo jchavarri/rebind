@@ -271,3 +271,13 @@ type green2;
 [@bs.val] external green2 : float => green2 = \\"green\\";
 "
 `;
+
+exports[`test16 - namespaced imports 1`] = `
+"type blue;
+
+type somethingBlue;
+
+[@bs.module]
+external somethingBlue : string => somethingBlue = \\"SomethingBlue\\";
+"
+`;

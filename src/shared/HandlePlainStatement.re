@@ -31,10 +31,14 @@ let h = (state: SharedTypes.state, (_, statement)) => {
       |> List.fold_left(
            (state, specifier) =>
              switch (specifier) {
-             | ImportDeclaration.ImportDefaultSpecifier(_) =>
-               failwith(
-                 "Bindings to default imports are not supported by BuckleScript yet",
-               )
+             | ImportDeclaration.ImportDefaultSpecifier((_loc, specifierName)) =>
+               let (state, _lastType) =
+                 HandleExpression.maybeAddIdentifier(
+                   ~customType=ModuleProperty(name, specifierName, "default"),
+                   state,
+                   specifierName,
+                 );
+               state;
              | ImportNamedSpecifier({local, remote}) =>
                let (_loc, localName) = Utils.getWithDefault(local, remote);
                let (_loc, remoteName) = remote;

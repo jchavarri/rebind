@@ -96,3 +96,9 @@ Expect.(
     expect(getOutput("015.test")) |> toMatchSnapshot
   )
 );
+
+Expect.(
+  test("test16 - namespaced imports", () =>
+    expect(getOutput("016.test")) |> toMatchSnapshot
+  )
+);
