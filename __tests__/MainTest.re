@@ -84,3 +84,15 @@ Expect.(
     expect(getOutput("013.test")) |> toMatchSnapshot
   )
 );
+
+Expect.(
+  test("test14 - default imports", () =>
+    expect(getOutput("014.test")) |> toMatchSnapshot
+  )
+);
+
+Expect.(
+  test("test15 - named imports with local name", () =>
+    expect(getOutput("015.test")) |> toMatchSnapshot
+  )
+);

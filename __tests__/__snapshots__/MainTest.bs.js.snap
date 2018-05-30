@@ -232,3 +232,42 @@ exports[`test13 - named \`import\` 1`] = `
 [@bs.module \\"SomethingBlue\\"] external blue : string => blue = \\"Blue\\";
 "
 `;
+
+exports[`test14 - default imports 1`] = `
+"type keycloak;
+
+type callback;
+
+type authenticated;
+
+type initParam;
+
+type init;
+
+type success;
+
+type error;
+
+[@bs.module \\"keycloak-js\\"] external keycloak : string => keycloak = \\"default\\";
+
+[@bs.obj] external makeInitParam : (~onLoad: string, unit) => initParam = \\"\\";
+
+[@bs.send] external init : (keycloak, initParam) => init = \\"\\";
+
+[@bs.send]
+external success : (init, authenticated => callback) => success = \\"\\";
+
+[@bs.send] external error : (success, callback) => error = \\"\\";
+"
+`;
+
+exports[`test15 - named imports with local name 1`] = `
+"type green;
+
+type green2;
+
+[@bs.module \\"SomethingBlue\\"] external green : string => green = \\"Blue\\";
+
+[@bs.val] external green2 : float => green2 = \\"green\\";
+"
+`;

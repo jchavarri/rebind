@@ -126,11 +126,11 @@ let rec handleCallableExpr = (exprType, callee, arguments, state) => {
         maybeAddExternal(state, NewAttr, name, rightSideTypes)
       | (_, Some(Module(n))) =>
         maybeAddExternal(state, Module, n, rightSideTypes)
-      | (_, Some(ModuleProperty(module_, specifier))) =>
+      | (_, Some(ModuleProperty(moduleName, local, remote))) =>
         maybeAddExternal(
           state,
-          ScopedModule(module_),
-          specifier,
+          ScopedModule(moduleName, remote),
+          local,
           rightSideTypes,
         )
       | (_, _) => maybeAddExternal(state, Val, name, rightSideTypes)
@@ -186,8 +186,8 @@ and h = (state, (_, expression)) =>
   | Identifier((_, name)) =>
     switch (Utils.tryFindId(name, state.identifiers)) {
     | Some(Module(n)) => maybeAddExternal(state, Module, n, [])
-    | Some(ModuleProperty(module_, specifier)) =>
-      maybeAddExternal(state, ScopedModule(module_), specifier, [])
+    | Some(ModuleProperty(moduleName, local, remote)) =>
+      maybeAddExternal(state, ScopedModule(moduleName, remote), local, [])
     | _ => maybeAddIdentifier(state, name)
     }
   | Literal(lit) => HandleLiteral.h(state, lit)
@@ -202,8 +202,8 @@ and h = (state, (_, expression)) =>
       | (_, Identifier((_, name))) =>
         switch (Utils.tryFindId(name, state.identifiers)) {
         | Some(Module(n)) => maybeAddExternal(state, Module, n, [])
-        | Some(ModuleProperty(module_, specifier)) =>
-          maybeAddExternal(state, ScopedModule(module_), specifier, [])
+        | Some(ModuleProperty(moduleName, local, remote)) =>
+          maybeAddExternal(state, ScopedModule(moduleName, remote), local, [])
         | _ => maybeAddExternal(state, Val, name, [])
         }
       | _ => h(state, _object)

@@ -24,7 +24,7 @@ let externalTypeToString = t =>
       "Fun type should be resolved before calling externalTypeToString",
     )
   | Module(n) => n
-  | ModuleProperty(_n, p) => p
+  | ModuleProperty(_name, local, _remote) => local
   | Named(_, _) =>
     failwith(
       "Named type should be resolved before calling externalTypeToString",
@@ -118,25 +118,30 @@ let typeFromExternalTypes = (typesList, safeIds) => {
   rootType(typesList);
 };
 
-let externalWithAttribute = (name, types, safeIds, attr) => {
-  let newName = OrigToSafeMap.find(name, safeIds);
-  let outputAttrs =
+let externalWithAttribute = (originalName, types, safeIds, attr) => {
+  let newName = OrigToSafeMap.find(originalName, safeIds);
+  let (outputAttrs, descFromStatement) =
     switch (attr) {
-    | Module => [("bs.module", None)]
-    | Send => [("bs.send", None)]
-    | Get => [("bs.get", None)]
-    | ObjectCreation => [("bs.obj", None)]
-    | Val => [("bs.val", None)]
-    | NewAttr => [("bs.new", None)]
-    | ModuleAndNew => [("bs.new", None), ("bs.module", None)]
-    | ScopedModule(name) => [("bs.module", Some(name))]
+    | Module => ([("bs.module", None)], None)
+    | Send => ([("bs.send", None)], None)
+    | Get => ([("bs.get", None)], None)
+    | ObjectCreation => ([("bs.obj", None)], None)
+    | Val => ([("bs.val", None)], None)
+    | NewAttr => ([("bs.new", None)], None)
+    | ModuleAndNew => ([("bs.new", None), ("bs.module", None)], None)
+    | ScopedModule(name, scopeProperty) => ([("bs.module", Some(name))], Some(scopeProperty))
     };
+  let valueDescription = switch (descFromStatement, newName == originalName) {
+  | (Some(desc), _) => desc
+  | (None, false) => originalName
+  | (None, true) => ""
+  };
   Str.primitive({
     pval_name: {
       loc: default_loc.contents,
       txt: newName,
     },
-    pval_prim: [newName == name ? "" : name],
+    pval_prim: [valueDescription],
     pval_loc: default_loc.contents,
     pval_type: typeFromExternalTypes(types, safeIds),
     pval_attributes:

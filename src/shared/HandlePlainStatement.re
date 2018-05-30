@@ -40,7 +40,7 @@ let h = (state: SharedTypes.state, (_, statement)) => {
                let (_loc, remoteName) = remote;
                let (state, _lastType) =
                  HandleExpression.maybeAddIdentifier(
-                   ~customType=ModuleProperty(name, remoteName),
+                   ~customType=ModuleProperty(name, localName, remoteName),
                    state,
                    localName,
                  );
