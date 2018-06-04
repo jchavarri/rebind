@@ -12,7 +12,7 @@
     "testPathIgnorePatterns": ["<rootDir>/__tests__/input/", "<rootDir>/node_modules/"]
   },
   "scripts": {
-    "build": "rebuild -no-hygiene -X lib -I vendor -I src/shared -I src/native -no-links -package compiler-libs.common -package unix ./src/native/Main.native",
+    "build": "rebuild -no-hygiene -X lib -I vendor/flow -I src/shared -I src/native -no-links -package compiler-libs.common -package unix ./src/native/Main.native",
     "build:js": "bsb -make-world",
     "clean:js": "bsb -clean-world",
     "start": "./_build/src/native/Main.native ./__tests__/input/001.test.js | refmt --parse binary --print re",

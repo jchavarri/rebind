@@ -53,7 +53,7 @@
       "type": "dev"
     },
     {
-      "dir": "vendor",
+      "dir": "vendor/flow",
       "generators": [
         {
           "name": "ocamllex",

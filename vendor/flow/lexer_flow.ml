@@ -1,4 +1,4 @@
-# 11 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 11 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
  
 module Ast = Spider_monkey_ast
 
@@ -732,7 +732,7 @@ end
       "null",    T_NULL;
     ]
 
-# 736 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 736 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 let __ocaml_lex_tables = {
   Lexing.lex_base = 
    "\000\000\178\255\179\255\185\255\066\000\067\000\084\000\087\000\
@@ -3151,28 +3151,28 @@ let rec token env lexbuf =
 and __ocaml_lex_token_rec env lexbuf __ocaml_lex_state =
   match Lexing.new_engine __ocaml_lex_tables __ocaml_lex_state lexbuf with
       | 0 ->
-# 798 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 798 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        (
                          Lexing.new_line lexbuf;
                          token env lexbuf
                        )
-# 3160 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3160 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 1 ->
-# 802 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 802 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( let env = illegal env (loc_of_lexbuf env lexbuf) in
                          token env lexbuf )
-# 3166 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3166 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 2 ->
-# 804 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 804 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        (
                          unicode_fix_cols lexbuf;
                          token env lexbuf )
-# 3173 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3173 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 3 ->
-# 807 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 807 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        (
                          let start = loc_of_lexbuf env lexbuf in
                          let buf = Buffer.create 127 in
@@ -3180,25 +3180,25 @@ and __ocaml_lex_token_rec env lexbuf __ocaml_lex_state =
                          let env = save_comment env start _end buf true in
                          token env lexbuf
                        )
-# 3184 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3184 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 4 ->
 let
-# 814 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 814 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                          sp
-# 3190 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3190 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 2) lexbuf.Lexing.lex_mem.(0)
 and
-# 814 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 814 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                                              escape_type
-# 3195 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3195 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_mem.(0) lexbuf.Lexing.lex_curr_pos
 and
-# 814 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 814 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                                                              pattern
-# 3200 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3200 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_curr_pos in
-# 815 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 815 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        (
                          if not (is_comment_syntax_enabled env) then
                            let start = loc_of_lexbuf env lexbuf in
@@ -3220,10 +3220,10 @@ and
                            | ":" -> env, T_COLON
                            | _ -> token env lexbuf
                        )
-# 3224 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3224 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 5 ->
-# 836 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 836 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        (
                          if is_in_comment_syntax env then
                            let env = in_comment_syntax false env in
@@ -3232,10 +3232,10 @@ and
                            let () = yyback 1 lexbuf in
                            env, T_MULT
                        )
-# 3236 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3236 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 6 ->
-# 844 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 844 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        (
                          let start = loc_of_lexbuf env lexbuf in
                          let buf = Buffer.create 127 in
@@ -3243,10 +3243,10 @@ and
                          let env = save_comment env start _end buf false in
                          token env lexbuf
                        )
-# 3247 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3247 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 7 ->
-# 853 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 853 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( if lexbuf.Lexing.lex_start_pos = 0
                          then begin
                            let env, _ =
@@ -3254,15 +3254,15 @@ and
                            token env lexbuf
                           end else env, T_ERROR
                        )
-# 3258 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3258 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 8 ->
 let
-# 861 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 861 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                  quote
-# 3264 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3264 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf lexbuf.Lexing.lex_start_pos in
-# 861 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 861 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        (
                          let start = loc_of_lexbuf env lexbuf in
                          let buf = Buffer.create 127 in
@@ -3273,10 +3273,10 @@ let
                            string_quote env quote buf raw octal lexbuf in
                          env, T_STRING (Loc.btwn start _end, Buffer.contents buf, Buffer.contents raw, octal)
                        )
-# 3277 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3277 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 9 ->
-# 871 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 871 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( let cooked = Buffer.create 127 in
                          let raw = Buffer.create 127 in
                          let literal = Buffer.create 127 in
@@ -3295,379 +3295,379 @@ let
                            is_tail
                          )
                        )
-# 3299 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3299 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 10 ->
 let
-# 890 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 890 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                                      w
-# 3305 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3305 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_mem.(0) lexbuf.Lexing.lex_curr_pos in
-# 891 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 891 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( illegal_number env lexbuf w (T_NUMBER BINARY) )
-# 3309 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3309 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 11 ->
-# 892 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 892 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_NUMBER BINARY )
-# 3314 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3314 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 12 ->
 let
-# 893 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 893 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                                      w
-# 3320 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3320 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_mem.(0) lexbuf.Lexing.lex_curr_pos in
-# 894 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 894 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( illegal_number env lexbuf w (T_NUMBER OCTAL) )
-# 3324 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3324 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 13 ->
-# 895 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 895 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_NUMBER OCTAL )
-# 3329 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3329 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 14 ->
 let
-# 896 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 896 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                                            w
-# 3335 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3335 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_mem.(0) lexbuf.Lexing.lex_curr_pos in
-# 897 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 897 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( illegal_number env lexbuf w (T_NUMBER LEGACY_OCTAL) )
-# 3339 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3339 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 15 ->
-# 898 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 898 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_NUMBER LEGACY_OCTAL )
-# 3344 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3344 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 16 ->
 let
-# 899 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 899 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                                w
-# 3350 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3350 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_mem.(0) lexbuf.Lexing.lex_curr_pos in
-# 900 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 900 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( illegal_number env lexbuf w (T_NUMBER NORMAL) )
-# 3354 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3354 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 17 ->
-# 901 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 901 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_NUMBER NORMAL )
-# 3359 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3359 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 18 ->
 let
-# 902 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 902 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        w
-# 3365 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3365 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_mem.(0) lexbuf.Lexing.lex_curr_pos in
-# 903 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 903 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( illegal_number env lexbuf w (T_NUMBER NORMAL) )
-# 3369 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3369 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 19 ->
-# 904 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 904 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_NUMBER NORMAL )
-# 3374 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3374 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 20 ->
 let
-# 905 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 905 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                          w
-# 3380 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3380 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_mem.(0) lexbuf.Lexing.lex_curr_pos in
-# 906 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 906 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( illegal_number env lexbuf w (T_NUMBER NORMAL) )
-# 3384 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3384 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 21 ->
-# 908 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 908 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_NUMBER NORMAL )
-# 3389 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3389 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 22 ->
 let
-# 912 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 912 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                     word
-# 3395 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3395 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_curr_pos in
-# 913 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 913 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        (
                          unicode_fix_cols lexbuf;
                          try env, Hashtbl.find keywords word
                          with Not_found -> env, T_IDENTIFIER
                        )
-# 3403 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3403 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 23 ->
-# 919 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 919 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_LCURLY )
-# 3408 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3408 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 24 ->
-# 920 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 920 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_RCURLY )
-# 3413 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3413 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 25 ->
-# 921 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 921 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_LPAREN )
-# 3418 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3418 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 26 ->
-# 922 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 922 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_RPAREN )
-# 3423 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3423 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 27 ->
-# 923 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 923 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_LBRACKET )
-# 3428 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3428 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 28 ->
-# 924 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 924 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_RBRACKET )
-# 3433 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3433 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 29 ->
-# 925 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 925 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_ELLIPSIS )
-# 3438 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3438 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 30 ->
-# 926 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 926 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_PERIOD )
-# 3443 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3443 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 31 ->
-# 927 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 927 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_SEMICOLON )
-# 3448 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3448 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 32 ->
-# 928 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 928 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_COMMA )
-# 3453 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3453 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 33 ->
-# 929 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 929 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_COLON )
-# 3458 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3458 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 34 ->
-# 930 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 930 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_PLING )
-# 3463 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3463 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 35 ->
-# 931 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 931 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_AND )
-# 3468 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3468 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 36 ->
-# 932 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 932 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_OR )
-# 3473 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3473 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 37 ->
-# 933 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 933 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_STRICT_EQUAL )
-# 3478 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3478 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 38 ->
-# 934 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 934 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_STRICT_NOT_EQUAL )
-# 3483 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3483 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 39 ->
-# 935 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 935 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_LESS_THAN_EQUAL )
-# 3488 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3488 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 40 ->
-# 936 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 936 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_GREATER_THAN_EQUAL )
-# 3493 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3493 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 41 ->
-# 937 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 937 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_EQUAL )
-# 3498 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3498 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 42 ->
-# 938 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 938 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_NOT_EQUAL )
-# 3503 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3503 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 43 ->
-# 939 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 939 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_INCR )
-# 3508 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3508 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 44 ->
-# 940 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 940 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_DECR )
-# 3513 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3513 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 45 ->
-# 941 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 941 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_LSHIFT_ASSIGN )
-# 3518 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3518 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 46 ->
-# 942 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 942 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_LSHIFT )
-# 3523 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3523 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 47 ->
-# 943 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 943 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_RSHIFT_ASSIGN )
-# 3528 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3528 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 48 ->
-# 944 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 944 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_RSHIFT3_ASSIGN )
-# 3533 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3533 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 49 ->
-# 945 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 945 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_RSHIFT3 )
-# 3538 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3538 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 50 ->
-# 946 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 946 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_RSHIFT )
-# 3543 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3543 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 51 ->
-# 947 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 947 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_PLUS_ASSIGN )
-# 3548 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3548 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 52 ->
-# 948 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 948 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_MINUS_ASSIGN )
-# 3553 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3553 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 53 ->
-# 949 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 949 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_MULT_ASSIGN )
-# 3558 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3558 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 54 ->
-# 950 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 950 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_EXP_ASSIGN )
-# 3563 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3563 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 55 ->
-# 951 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 951 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_MOD_ASSIGN )
-# 3568 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3568 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 56 ->
-# 952 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 952 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_BIT_AND_ASSIGN )
-# 3573 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3573 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 57 ->
-# 953 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 953 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_BIT_OR_ASSIGN )
-# 3578 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3578 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 58 ->
-# 954 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 954 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_BIT_XOR_ASSIGN )
-# 3583 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3583 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 59 ->
-# 955 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 955 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_LESS_THAN )
-# 3588 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3588 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 60 ->
-# 956 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 956 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_GREATER_THAN )
-# 3593 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3593 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 61 ->
-# 957 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 957 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_PLUS )
-# 3598 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3598 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 62 ->
-# 958 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 958 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_MINUS )
-# 3603 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3603 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 63 ->
-# 959 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 959 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_MULT )
-# 3608 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3608 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 64 ->
-# 960 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 960 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_EXP )
-# 3613 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3613 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 65 ->
-# 961 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 961 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_MOD )
-# 3618 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3618 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 66 ->
-# 962 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 962 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_BIT_OR )
-# 3623 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3623 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 67 ->
-# 963 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 963 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_BIT_AND )
-# 3628 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3628 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 68 ->
-# 964 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 964 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_BIT_XOR )
-# 3633 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3633 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 69 ->
-# 965 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 965 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_NOT )
-# 3638 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3638 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 70 ->
-# 966 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 966 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_BIT_NOT )
-# 3643 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3643 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 71 ->
-# 967 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 967 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_ASSIGN )
-# 3648 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3648 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 72 ->
-# 968 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 968 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_ARROW )
-# 3653 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3653 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 73 ->
-# 969 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 969 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_DIV_ASSIGN )
-# 3658 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3658 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 74 ->
-# 970 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 970 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_DIV )
-# 3663 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3663 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 75 ->
-# 971 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 971 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_AT )
-# 3668 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3668 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 76 ->
-# 973 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 973 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( let env =
                            if is_in_comment_syntax env then
                              let loc = loc_of_lexbuf env lexbuf in
@@ -3675,13 +3675,13 @@ let
                            else env
                          in
                          env, T_EOF )
-# 3679 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3679 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 77 ->
-# 980 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 980 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( let env = illegal env (loc_of_lexbuf env lexbuf) in
                          env, T_ERROR )
-# 3685 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3685 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; 
       __ocaml_lex_token_rec env lexbuf __ocaml_lex_state
@@ -3706,47 +3706,47 @@ and type_token env lexbuf =
 and __ocaml_lex_type_token_rec env lexbuf __ocaml_lex_state =
   match Lexing.new_engine __ocaml_lex_tables __ocaml_lex_state lexbuf with
       | 0 ->
-# 989 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 989 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        (
                            Lexing.new_line lexbuf;
                            type_token env lexbuf
                        )
-# 3715 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3715 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 1 ->
-# 993 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 993 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        (
                          unicode_fix_cols lexbuf;
                          type_token env lexbuf )
-# 3722 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3722 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 2 ->
-# 996 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 996 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( let start = loc_of_lexbuf env lexbuf in
                          let buf = Buffer.create 127 in
                          let env, _end = comment env buf lexbuf in
                          let env = save_comment env start _end buf true in
                          type_token env lexbuf
                        )
-# 3732 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3732 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 3 ->
 let
-# 1002 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1002 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                          sp
-# 3738 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3738 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 2) lexbuf.Lexing.lex_mem.(0)
 and
-# 1002 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1002 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                                              escape_type
-# 3743 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3743 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_mem.(0) lexbuf.Lexing.lex_curr_pos
 and
-# 1002 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1002 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                                                              pattern
-# 3748 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3748 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_curr_pos in
-# 1003 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1003 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        (
                          if not (is_comment_syntax_enabled env) then
                            let start = loc_of_lexbuf env lexbuf in
@@ -3768,10 +3768,10 @@ and
                            | ":" -> env, T_COLON
                            | _ -> type_token env lexbuf
                        )
-# 3772 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3772 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 4 ->
-# 1024 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1024 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        (
                          if is_in_comment_syntax env then
                            let env = in_comment_syntax false env in
@@ -3780,10 +3780,10 @@ and
                            let () = yyback 1 lexbuf in
                            env, T_MULT
                        )
-# 3784 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3784 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 5 ->
-# 1032 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1032 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        (
                          let start = loc_of_lexbuf env lexbuf in
                          let buf = Buffer.create 127 in
@@ -3791,15 +3791,15 @@ and
                          let env = save_comment env start _end buf true in
                          type_token env lexbuf
                        )
-# 3795 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3795 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 6 ->
 let
-# 1039 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1039 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                  quote
-# 3801 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3801 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf lexbuf.Lexing.lex_start_pos in
-# 1039 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1039 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        (
                          let start = loc_of_lexbuf env lexbuf in
                          let buf = Buffer.create 127 in
@@ -3810,130 +3810,130 @@ let
                            string_quote env quote buf raw octal lexbuf in
                          env, T_STRING (Loc.btwn start _end, Buffer.contents buf, Buffer.contents raw, octal)
                        )
-# 3814 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3814 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 7 ->
 let
-# 1055 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1055 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
              neg
-# 3820 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3820 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_mem.(0)
 and
-# 1055 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1055 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                 num
-# 3825 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3825 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_mem.(0) lexbuf.Lexing.lex_mem.(1)
 and
-# 1055 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1055 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                                                             w
-# 3830 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3830 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_mem.(1) lexbuf.Lexing.lex_curr_pos in
-# 1056 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1056 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
       ( illegal_number env lexbuf w (mk_num_singleton BINARY num neg) )
-# 3834 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3834 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 8 ->
 let
-# 1057 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1057 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
              neg
-# 3840 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3840 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_mem.(0)
 and
-# 1057 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1057 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                 num
-# 3845 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3845 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_mem.(0) lexbuf.Lexing.lex_curr_pos in
-# 1058 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1058 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
       ( env, mk_num_singleton BINARY num neg )
-# 3849 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3849 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 9 ->
 let
-# 1059 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1059 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
              neg
-# 3855 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3855 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_mem.(0)
 and
-# 1059 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1059 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                 num
-# 3860 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3860 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_mem.(0) lexbuf.Lexing.lex_mem.(1)
 and
-# 1059 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1059 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                                                             w
-# 3865 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3865 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_mem.(1) lexbuf.Lexing.lex_curr_pos in
-# 1060 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1060 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
       ( illegal_number env lexbuf w (mk_num_singleton OCTAL num neg) )
-# 3869 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3869 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 10 ->
 let
-# 1061 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1061 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
              neg
-# 3875 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3875 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_mem.(0)
 and
-# 1061 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1061 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                 num
-# 3880 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3880 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_mem.(0) lexbuf.Lexing.lex_curr_pos in
-# 1062 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1062 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
       ( env, mk_num_singleton OCTAL num neg )
-# 3884 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3884 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 11 ->
 let
-# 1063 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1063 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
              neg
-# 3890 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3890 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_mem.(0)
 and
-# 1063 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1063 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                       num
-# 3895 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3895 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_mem.(0) lexbuf.Lexing.lex_mem.(1)
 and
-# 1063 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1063 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                                                                   w
-# 3900 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3900 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_mem.(1) lexbuf.Lexing.lex_curr_pos in
-# 1064 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1064 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
       ( illegal_number env lexbuf w (mk_num_singleton LEGACY_OCTAL num neg) )
-# 3904 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3904 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 12 ->
 let
-# 1065 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1065 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
              neg
-# 3910 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3910 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_mem.(0)
 and
-# 1065 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1065 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                       num
-# 3915 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3915 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_mem.(0) lexbuf.Lexing.lex_curr_pos in
-# 1066 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1066 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
       ( env, mk_num_singleton LEGACY_OCTAL num neg )
-# 3919 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3919 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 13 ->
 let
-# 1067 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1067 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
              neg
-# 3925 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3925 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_mem.(0)
 and
-# 1067 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1067 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                 num
-# 3930 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3930 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_mem.(0) lexbuf.Lexing.lex_mem.(1)
 and
-# 1067 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1067 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                                                       w
-# 3935 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3935 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_mem.(1) lexbuf.Lexing.lex_curr_pos in
-# 1068 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1068 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
       (
         let env, singleton =
           try env, mk_num_singleton NORMAL num neg
@@ -3943,20 +3943,20 @@ and
             env, T_NUMBER_SINGLETON_TYPE (NORMAL, 789.0) in
         illegal_number env lexbuf w singleton
       )
-# 3947 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3947 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 14 ->
 let
-# 1077 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1077 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
              neg
-# 3953 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3953 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_mem.(0)
 and
-# 1077 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1077 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                 num
-# 3958 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3958 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_mem.(0) lexbuf.Lexing.lex_curr_pos in
-# 1078 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1078 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
       (
         try env, mk_num_singleton NORMAL num neg
         with _ when Sys.win32 ->
@@ -3964,244 +3964,244 @@ and
           let env = lex_error env loc Parse_error.WindowsFloatOfString in
           env, T_NUMBER_SINGLETON_TYPE (NORMAL, 789.0)
       )
-# 3968 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3968 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 15 ->
 let
-# 1085 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1085 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
              neg
-# 3974 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3974 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_mem.(0)
 and
-# 1085 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1085 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                 num
-# 3979 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3979 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_mem.(0) lexbuf.Lexing.lex_mem.(1)
 and
-# 1085 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1085 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                               w
-# 3984 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3984 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_mem.(1) lexbuf.Lexing.lex_curr_pos in
-# 1086 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1086 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
       ( illegal_number env lexbuf w (mk_num_singleton NORMAL num neg) )
-# 3988 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3988 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 16 ->
 let
-# 1087 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1087 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
              neg
-# 3994 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3994 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_mem.(0)
 and
-# 1087 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1087 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                 num
-# 3999 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 3999 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_mem.(0) lexbuf.Lexing.lex_curr_pos in
-# 1088 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1088 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
       ( env, mk_num_singleton NORMAL num neg )
-# 4003 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4003 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 17 ->
 let
-# 1089 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1089 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
              neg
-# 4009 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4009 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_mem.(0)
 and
-# 1089 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1089 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                                   num
-# 4014 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4014 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_mem.(0) lexbuf.Lexing.lex_mem.(1)
 and
-# 1089 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1089 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                                                 w
-# 4019 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4019 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_mem.(1) lexbuf.Lexing.lex_curr_pos in
-# 1090 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1090 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
       ( illegal_number env lexbuf w (mk_num_singleton NORMAL num neg) )
-# 4023 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4023 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 18 ->
 let
-# 1091 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1091 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
              neg
-# 4029 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4029 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_mem.(1) lexbuf.Lexing.lex_mem.(0)
 and
-# 1091 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1091 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                   num
-# 4034 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4034 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_mem.(3) lexbuf.Lexing.lex_mem.(2) in
-# 1093 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1093 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
       ( env, mk_num_singleton NORMAL num neg )
-# 4038 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4038 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 19 ->
 let
-# 1096 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1096 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
             word
-# 4044 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4044 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_curr_pos in
-# 1096 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1096 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        (
                          unicode_fix_cols lexbuf;
                          try env, Hashtbl.find type_keywords word
                          with Not_found -> env, T_IDENTIFIER
                        )
-# 4052 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4052 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 20 ->
-# 1101 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1101 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_CHECKS )
-# 4057 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4057 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 21 ->
-# 1103 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1103 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_LBRACKET )
-# 4062 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4062 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 22 ->
-# 1104 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1104 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_RBRACKET )
-# 4067 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4067 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 23 ->
-# 1105 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1105 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_LCURLY )
-# 4072 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4072 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 24 ->
-# 1106 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1106 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_RCURLY )
-# 4077 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4077 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 25 ->
-# 1107 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1107 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_LCURLYBAR )
-# 4082 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4082 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 26 ->
-# 1108 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1108 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_RCURLYBAR )
-# 4087 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4087 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 27 ->
-# 1109 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1109 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_LPAREN )
-# 4092 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4092 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 28 ->
-# 1110 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1110 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_RPAREN )
-# 4097 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4097 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 29 ->
-# 1111 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1111 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_ELLIPSIS )
-# 4102 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4102 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 30 ->
-# 1112 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1112 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_PERIOD )
-# 4107 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4107 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 31 ->
-# 1113 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1113 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_SEMICOLON )
-# 4112 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4112 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 32 ->
-# 1114 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1114 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_COMMA )
-# 4117 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4117 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 33 ->
-# 1115 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1115 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_COLON )
-# 4122 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4122 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 34 ->
-# 1116 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1116 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_PLING )
-# 4127 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4127 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 35 ->
-# 1117 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1117 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_LBRACKET )
-# 4132 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4132 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 36 ->
-# 1118 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1118 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_RBRACKET )
-# 4137 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4137 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 37 ->
-# 1120 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1120 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_LESS_THAN )
-# 4142 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4142 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 38 ->
-# 1121 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1121 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_GREATER_THAN )
-# 4147 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4147 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 39 ->
-# 1123 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1123 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_ASSIGN )
-# 4152 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4152 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 40 ->
-# 1125 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1125 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_PLING )
-# 4157 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4157 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 41 ->
-# 1127 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1127 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_MULT )
-# 4162 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4162 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 42 ->
-# 1129 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1129 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_COLON )
-# 4167 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4167 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 43 ->
-# 1131 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1131 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_BIT_OR )
-# 4172 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4172 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 44 ->
-# 1133 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1133 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_BIT_AND )
-# 4177 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4177 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 45 ->
-# 1135 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1135 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_TYPEOF )
-# 4182 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4182 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 46 ->
-# 1137 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1137 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_ARROW )
-# 4187 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4187 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 47 ->
-# 1139 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1139 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_ASSIGN )
-# 4192 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4192 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 48 ->
-# 1141 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1141 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_PLUS )
-# 4197 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4197 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 49 ->
-# 1142 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1142 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_MINUS )
-# 4202 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4202 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 50 ->
-# 1145 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1145 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( let env =
                            if is_in_comment_syntax env then
                              let loc = loc_of_lexbuf env lexbuf in
@@ -4209,12 +4209,12 @@ let
                            else env
                          in
                          env, T_EOF )
-# 4213 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4213 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 51 ->
-# 1152 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1152 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, T_ERROR )
-# 4218 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4218 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; 
       __ocaml_lex_type_token_rec env lexbuf __ocaml_lex_state
@@ -4225,11 +4225,11 @@ and __ocaml_lex_string_quote_rec env q buf raw octal lexbuf __ocaml_lex_state =
   match Lexing.engine __ocaml_lex_tables __ocaml_lex_state lexbuf with
       | 0 ->
 let
-# 1157 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1157 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                    q'
-# 4231 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4231 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf lexbuf.Lexing.lex_start_pos in
-# 1157 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1157 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                          (  Buffer.add_char raw q';
                           if q = q'
                           then env, loc_of_lexbuf env lexbuf, octal
@@ -4238,47 +4238,47 @@ let
                             string_quote env q buf raw octal lexbuf
                           end
                        )
-# 4242 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4242 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 1 ->
 let
-# 1165 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1165 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
             e
-# 4248 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4248 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf lexbuf.Lexing.lex_start_pos in
-# 1165 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1165 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( Buffer.add_char raw e;
                          let env, octal' = string_escape env buf lexbuf in
                          let octal = octal' || octal in
                          Buffer.add_string raw (Lexing.lexeme lexbuf);
                          string_quote env q buf raw octal lexbuf )
-# 4256 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4256 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 2 ->
 let
-# 1170 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1170 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                     x
-# 4262 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4262 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_curr_pos in
-# 1170 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1170 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( Buffer.add_string raw x;
                          let env = illegal env (loc_of_lexbuf env lexbuf) in
                          Buffer.add_string buf x;
                          env, loc_of_lexbuf env lexbuf, octal
                        )
-# 4270 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4270 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 3 ->
 let
-# 1175 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1175 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
          x
-# 4276 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4276 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf lexbuf.Lexing.lex_start_pos in
-# 1175 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1175 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( Buffer.add_char raw x;
                          Buffer.add_char buf x;
                          string_quote env q buf raw octal lexbuf )
-# 4282 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4282 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; 
       __ocaml_lex_string_quote_rec env q buf raw octal lexbuf __ocaml_lex_state
@@ -4288,50 +4288,50 @@ and string_escape env buf lexbuf =
 and __ocaml_lex_string_escape_rec env buf lexbuf __ocaml_lex_state =
   match Lexing.engine __ocaml_lex_tables __ocaml_lex_state lexbuf with
       | 0 ->
-# 1180 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1180 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( env, false )
-# 4294 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4294 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 1 ->
-# 1181 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1181 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Buffer.add_string buf "\\";
                         env, false )
-# 4300 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4300 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 2 ->
 let
-# 1183 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1183 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                 a
-# 4306 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4306 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 1)
 and
-# 1183 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1183 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                            b
-# 4311 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4311 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 2) in
-# 1184 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1184 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( let code = hexa_to_int a * 16 + hexa_to_int b in
                         List.iter (Buffer.add_char buf) (utf16to8 code);
                         env, false )
-# 4317 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4317 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 3 ->
 let
-# 1187 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1187 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                   a
-# 4323 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4323 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf lexbuf.Lexing.lex_start_pos
 and
-# 1187 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1187 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                    b
-# 4328 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4328 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 1)
 and
-# 1187 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1187 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                                     c
-# 4333 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4333 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 2) in
-# 1188 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1188 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( let code =
                           (oct_to_int a lsl 6) +
                           (oct_to_int b lsl 3) +
@@ -4349,98 +4349,98 @@ and
                         end;
                         env, true
                       )
-# 4353 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4353 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 4 ->
 let
-# 1205 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1205 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                   a
-# 4359 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4359 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf lexbuf.Lexing.lex_start_pos
 and
-# 1205 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1205 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                    b
-# 4364 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4364 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 1) in
-# 1206 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1206 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( let code =
                           (oct_to_int a lsl 3) +
                           (oct_to_int b) in
                         List.iter (Buffer.add_char buf) (utf16to8 code);
                         env, true
                       )
-# 4373 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4373 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 5 ->
-# 1212 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1212 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Buffer.add_char buf (Char.chr 0x0); env, false )
-# 4378 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4378 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 6 ->
-# 1213 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1213 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Buffer.add_char buf (Char.chr 0x8); env, false )
-# 4383 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4383 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 7 ->
-# 1214 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1214 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Buffer.add_char buf (Char.chr 0xC); env, false )
-# 4388 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4388 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 8 ->
-# 1215 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1215 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Buffer.add_char buf (Char.chr 0xA); env, false )
-# 4393 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4393 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 9 ->
-# 1216 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1216 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Buffer.add_char buf (Char.chr 0xD); env, false )
-# 4398 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4398 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 10 ->
-# 1217 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1217 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Buffer.add_char buf (Char.chr 0x9); env, false )
-# 4403 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4403 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 11 ->
-# 1218 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1218 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Buffer.add_char buf (Char.chr 0xB); env, false )
-# 4408 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4408 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 12 ->
 let
-# 1219 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1219 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                   a
-# 4414 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4414 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf lexbuf.Lexing.lex_start_pos in
-# 1220 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1220 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( let code = oct_to_int a in
                         List.iter (Buffer.add_char buf) (utf16to8 code);
                         env, true
                       )
-# 4421 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4421 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 13 ->
 let
-# 1224 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1224 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                 a
-# 4427 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4427 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 1)
 and
-# 1224 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1224 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                            b
-# 4432 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4432 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 2)
 and
-# 1224 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1224 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                       c
-# 4437 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4437 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 3)
 and
-# 1224 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1224 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                                  d
-# 4442 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4442 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 4) in
-# 1225 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1225 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( let code =
                           (hexa_to_int a lsl 12) +
                           (hexa_to_int b lsl 8) +
@@ -4449,15 +4449,15 @@ and
                         List.iter (Buffer.add_char buf) (utf16to8 code);
                         env, false
                       )
-# 4453 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4453 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 14 ->
 let
-# 1233 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1233 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                   hex_code
-# 4459 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4459 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 2) (lexbuf.Lexing.lex_curr_pos + -1) in
-# 1234 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1234 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       (
                         let code = int_of_string ("0x"^hex_code) in
                         (* 11.8.4.1 *)
@@ -4468,34 +4468,34 @@ let
                         List.iter (Buffer.add_char buf) (utf16to8 code);
                         env, false
                       )
-# 4472 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4472 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 15 ->
 let
-# 1244 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1244 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        c
-# 4478 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4478 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf lexbuf.Lexing.lex_start_pos in
-# 1245 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1245 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( let env = illegal env (loc_of_lexbuf env lexbuf) in
                         Buffer.add_char buf c;
                         env, false )
-# 4484 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4484 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 16 ->
-# 1249 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1249 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Lexing.new_line lexbuf; env, false )
-# 4489 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4489 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 17 ->
 let
-# 1250 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1250 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
          c
-# 4495 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4495 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf lexbuf.Lexing.lex_start_pos in
-# 1250 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1250 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Buffer.add_char buf c; env, false )
-# 4499 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4499 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; 
       __ocaml_lex_string_escape_rec env buf lexbuf __ocaml_lex_state
@@ -4505,20 +4505,20 @@ and comment env buf lexbuf =
 and __ocaml_lex_comment_rec env buf lexbuf __ocaml_lex_state =
   match Lexing.engine __ocaml_lex_tables __ocaml_lex_state lexbuf with
       | 0 ->
-# 1253 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1253 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( let env = illegal env (loc_of_lexbuf env lexbuf) in
                          env, loc_of_lexbuf env lexbuf )
-# 4512 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4512 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 1 ->
-# 1255 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1255 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( Lexing.new_line lexbuf;
                          Buffer.add_char buf '\n';
                          comment env buf lexbuf )
-# 4519 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4519 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 2 ->
-# 1258 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1258 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        (
                          let loc = loc_of_lexbuf env lexbuf in
                          let env = if is_in_comment_syntax env
@@ -4527,10 +4527,10 @@ and __ocaml_lex_comment_rec env buf lexbuf __ocaml_lex_state =
                          in
                          env, loc
                        )
-# 4531 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4531 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 3 ->
-# 1266 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1266 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        (
                          if is_in_comment_syntax env
                          then env, loc_of_lexbuf env lexbuf
@@ -4539,18 +4539,18 @@ and __ocaml_lex_comment_rec env buf lexbuf __ocaml_lex_state =
                            comment env buf lexbuf
                          )
                        )
-# 4543 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4543 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 4 ->
 let
-# 1274 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1274 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
           c
-# 4549 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4549 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf lexbuf.Lexing.lex_start_pos in
-# 1274 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1274 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( Buffer.add_char buf c;
                          comment env buf lexbuf )
-# 4554 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4554 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; 
       __ocaml_lex_comment_rec env buf lexbuf __ocaml_lex_state
@@ -4560,12 +4560,12 @@ and line_comment env buf lexbuf =
 and __ocaml_lex_line_comment_rec env buf lexbuf __ocaml_lex_state =
   match Lexing.engine __ocaml_lex_tables __ocaml_lex_state lexbuf with
       | 0 ->
-# 1278 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1278 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( env, loc_of_lexbuf env lexbuf )
-# 4566 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4566 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 1 ->
-# 1279 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1279 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( let open Loc in
                          let { source; start; _end = { line; column; offset } }
                            = loc_of_lexbuf env lexbuf in
@@ -4577,18 +4577,18 @@ and __ocaml_lex_line_comment_rec env buf lexbuf __ocaml_lex_state =
                          } in
                          env, { source; start; _end; }
                        )
-# 4581 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4581 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 2 ->
 let
-# 1290 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1290 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
          c
-# 4587 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4587 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf lexbuf.Lexing.lex_start_pos in
-# 1290 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1290 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        ( Buffer.add_char buf c;
                          line_comment env buf lexbuf )
-# 4592 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4592 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; 
       __ocaml_lex_line_comment_rec env buf lexbuf __ocaml_lex_state
@@ -4598,55 +4598,55 @@ and regexp env lexbuf =
 and __ocaml_lex_regexp_rec env lexbuf __ocaml_lex_state =
   match Lexing.engine __ocaml_lex_tables __ocaml_lex_state lexbuf with
       | 0 ->
-# 1294 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1294 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( env, T_EOF )
-# 4604 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4604 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 1 ->
-# 1296 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1296 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Lexing.new_line lexbuf;
                         regexp env lexbuf )
-# 4610 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4610 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 2 ->
-# 1298 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1298 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( unicode_fix_cols lexbuf;
                         regexp env lexbuf )
-# 4616 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4616 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 3 ->
-# 1300 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1300 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( let start = loc_of_lexbuf env lexbuf in
                         let buf = Buffer.create 127 in
                         let env, _end = line_comment env buf lexbuf in
                         let env = save_comment env start _end buf true in
                         regexp env lexbuf )
-# 4625 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4625 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 4 ->
-# 1305 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1305 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( let start = loc_of_lexbuf env lexbuf in
                         let buf = Buffer.create 127 in
                         let env, _end = comment env buf lexbuf in
                         let env = save_comment env start _end buf true in
                         regexp env lexbuf )
-# 4634 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4634 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 5 ->
-# 1310 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1310 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( let start = loc_of_lexbuf env lexbuf in
                         let buf = Buffer.create 127 in
                         let env, flags = regexp_body env buf lexbuf in
                         let end_ = loc_of_lexbuf env lexbuf in
                         let loc = Loc.btwn start end_ in
                         env, T_REGEXP (loc, Buffer.contents buf, flags) )
-# 4644 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4644 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 6 ->
-# 1316 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1316 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( let env = illegal env (loc_of_lexbuf env lexbuf) in
                         env, T_ERROR )
-# 4650 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4650 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; 
       __ocaml_lex_regexp_rec env lexbuf __ocaml_lex_state
@@ -4656,74 +4656,74 @@ and regexp_body env buf lexbuf =
 and __ocaml_lex_regexp_body_rec env buf lexbuf __ocaml_lex_state =
   match Lexing.engine __ocaml_lex_tables __ocaml_lex_state lexbuf with
       | 0 ->
-# 1320 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1320 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( let loc = loc_of_lexbuf env lexbuf in
                         let env = lex_error env loc Parse_error.UnterminatedRegExp in
                         env, "" )
-# 4664 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4664 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 1 ->
-# 1324 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1324 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( let loc = loc_of_lexbuf env lexbuf in
                         let env = lex_error env loc Parse_error.UnterminatedRegExp in
                         env, "" )
-# 4671 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4671 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 2 ->
 let
-# 1327 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1327 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                   s
-# 4677 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4677 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos (lexbuf.Lexing.lex_start_pos + 2) in
-# 1327 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1327 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Buffer.add_string buf s;
                         regexp_body env buf lexbuf )
-# 4682 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4682 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 3 ->
 let
-# 1329 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1329 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                     flags
-# 4688 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4688 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1) lexbuf.Lexing.lex_curr_pos in
-# 1330 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1330 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( env, flags )
-# 4692 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4692 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 4 ->
-# 1331 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1331 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( env, "" )
-# 4697 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4697 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 5 ->
 let
-# 1332 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1332 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
            c
-# 4703 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4703 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf lexbuf.Lexing.lex_start_pos in
-# 1332 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1332 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Buffer.add_char buf c;
                         let env = regexp_class env buf lexbuf in
                         regexp_body env buf lexbuf )
-# 4709 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4709 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 6 ->
-# 1336 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1336 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( let loc = loc_of_lexbuf env lexbuf in
                         let env = lex_error env loc Parse_error.UnterminatedRegExp in
                         env, "" )
-# 4716 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4716 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 7 ->
 let
-# 1339 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1339 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
          c
-# 4722 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4722 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf lexbuf.Lexing.lex_start_pos in
-# 1339 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1339 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Buffer.add_char buf c;
                         regexp_body env buf lexbuf )
-# 4727 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4727 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; 
       __ocaml_lex_regexp_body_rec env buf lexbuf __ocaml_lex_state
@@ -4733,52 +4733,52 @@ and regexp_class env buf lexbuf =
 and __ocaml_lex_regexp_class_rec env buf lexbuf __ocaml_lex_state =
   match Lexing.engine __ocaml_lex_tables __ocaml_lex_state lexbuf with
       | 0 ->
-# 1343 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1343 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( env )
-# 4739 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4739 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 1 ->
 let
-# 1344 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1344 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
               s
-# 4745 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4745 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos (lexbuf.Lexing.lex_start_pos + 2) in
-# 1344 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1344 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Buffer.add_string buf s;
                         regexp_class env buf lexbuf )
-# 4750 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4750 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 2 ->
 let
-# 1346 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1346 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                     s
-# 4756 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4756 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos (lexbuf.Lexing.lex_start_pos + 2) in
-# 1346 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1346 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Buffer.add_string buf s;
                         regexp_class env buf lexbuf )
-# 4761 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4761 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 3 ->
 let
-# 1348 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1348 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
            c
-# 4767 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4767 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf lexbuf.Lexing.lex_start_pos in
-# 1348 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1348 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Buffer.add_char buf c; env )
-# 4771 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4771 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 4 ->
 let
-# 1349 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1349 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
          c
-# 4777 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4777 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf lexbuf.Lexing.lex_start_pos in
-# 1349 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1349 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Buffer.add_char buf c;
                         regexp_class env buf lexbuf )
-# 4782 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4782 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; 
       __ocaml_lex_regexp_class_rec env buf lexbuf __ocaml_lex_state
@@ -4788,88 +4788,88 @@ and jsx_tag env lexbuf =
 and __ocaml_lex_jsx_tag_rec env lexbuf __ocaml_lex_state =
   match Lexing.engine __ocaml_lex_tables __ocaml_lex_state lexbuf with
       | 0 ->
-# 1353 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1353 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( env, T_EOF )
-# 4794 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4794 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 1 ->
-# 1355 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1355 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Lexing.new_line lexbuf;
                         jsx_tag env lexbuf )
-# 4800 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4800 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 2 ->
-# 1357 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1357 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( unicode_fix_cols lexbuf;
                         jsx_tag env lexbuf )
-# 4806 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4806 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 3 ->
-# 1359 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1359 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( let start = loc_of_lexbuf env lexbuf in
                         let buf = Buffer.create 127 in
                         let env, _end = line_comment env buf lexbuf in
                         let env = save_comment env start _end buf true in
                         jsx_tag env lexbuf )
-# 4815 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4815 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 4 ->
-# 1364 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1364 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( let start = loc_of_lexbuf env lexbuf in
                         let buf = Buffer.create 127 in
                         let env, _end = comment env buf lexbuf in
                         let env = save_comment env start _end buf true in
                         jsx_tag env lexbuf )
-# 4824 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4824 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 5 ->
-# 1369 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1369 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( env, T_LESS_THAN )
-# 4829 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4829 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 6 ->
-# 1370 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1370 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( env, T_DIV )
-# 4834 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4834 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 7 ->
-# 1371 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1371 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( env, T_GREATER_THAN )
-# 4839 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4839 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 8 ->
-# 1372 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1372 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( env, T_LCURLY )
-# 4844 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4844 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 9 ->
-# 1373 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1373 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( env, T_COLON )
-# 4849 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4849 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 10 ->
-# 1374 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1374 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( env, T_PERIOD )
-# 4854 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4854 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 11 ->
-# 1375 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1375 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( env, T_ASSIGN )
-# 4859 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4859 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 12 ->
-# 1377 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1377 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( unicode_fix_cols lexbuf;
                         env, T_JSX_IDENTIFIER )
-# 4865 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4865 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 13 ->
 let
-# 1379 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1379 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                   quote
-# 4871 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4871 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf lexbuf.Lexing.lex_start_pos in
-# 1380 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1380 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       (
                         let start = loc_of_lexbuf env lexbuf in
                         let buf = Buffer.create 127 in
@@ -4884,12 +4884,12 @@ let
                         let raw = Buffer.contents raw in
                         env, T_JSX_TEXT (Loc.btwn start _end, value, raw)
                       )
-# 4888 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4888 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 14 ->
-# 1394 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1394 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( env, T_ERROR )
-# 4893 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4893 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; 
       __ocaml_lex_jsx_tag_rec env lexbuf __ocaml_lex_state
@@ -4900,11 +4900,11 @@ and __ocaml_lex_jsx_child_rec env start buf raw lexbuf __ocaml_lex_state =
   match Lexing.engine __ocaml_lex_tables __ocaml_lex_state lexbuf with
       | 0 ->
 let
-# 1402 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1402 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                 lt
-# 4906 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4906 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_curr_pos in
-# 1403 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1403 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Buffer.add_string raw lt;
                         Buffer.add_string buf lt;
                         Lexing.new_line lexbuf;
@@ -4914,30 +4914,30 @@ let
                         let raw = Buffer.contents raw in
                         env, T_JSX_TEXT (Loc.btwn start _end, value, raw)
                       )
-# 4918 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4918 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 1 ->
-# 1412 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1412 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( env, T_EOF )
-# 4923 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4923 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 2 ->
-# 1413 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1413 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( env, T_LESS_THAN )
-# 4928 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4928 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 3 ->
-# 1414 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1414 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( env, T_LCURLY )
-# 4933 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4933 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 4 ->
 let
-# 1415 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1415 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
          c
-# 4939 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4939 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf lexbuf.Lexing.lex_start_pos in
-# 1415 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1415 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Buffer.add_char raw c;
                         Buffer.add_char buf c;
                         let env, _end =
@@ -4946,7 +4946,7 @@ let
                         let raw = Buffer.contents raw in
                         env, T_JSX_TEXT (Loc.btwn start _end, value, raw)
                       )
-# 4950 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4950 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; 
       __ocaml_lex_jsx_child_rec env start buf raw lexbuf __ocaml_lex_state
@@ -4957,11 +4957,11 @@ and __ocaml_lex_jsx_text_rec env mode buf raw lexbuf __ocaml_lex_state =
   match Lexing.engine __ocaml_lex_tables __ocaml_lex_state lexbuf with
       | 0 ->
 let
-# 1425 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1425 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                          c
-# 4963 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4963 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf lexbuf.Lexing.lex_start_pos in
-# 1426 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1426 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( match mode, c with
                         | JSX_SINGLE_QUOTED_TEXT, '\''
                         | JSX_DOUBLE_QUOTED_TEXT, '"' ->
@@ -4976,79 +4976,79 @@ let
                             Buffer.add_char buf c;
                             jsx_text env mode buf raw lexbuf
                       )
-# 4980 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4980 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 1 ->
-# 1440 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1440 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( let env = illegal env (loc_of_lexbuf env lexbuf) in
                         env, loc_of_lexbuf env lexbuf
                       )
-# 4987 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4987 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 2 ->
 let
-# 1443 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1443 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                 lt
-# 4993 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 4993 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_curr_pos in
-# 1444 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1444 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Buffer.add_string raw lt;
                         Buffer.add_string buf lt;
                         Lexing.new_line lexbuf;
                         jsx_text env mode buf raw lexbuf
                       )
-# 5001 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 5001 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 3 ->
 let
-# 1449 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1449 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                    n
-# 5007 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 5007 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 3) (lexbuf.Lexing.lex_curr_pos + -1)
 and
-# 1449 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1449 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                              s
-# 5012 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 5012 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_curr_pos in
-# 1450 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1450 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Buffer.add_string raw s;
                         let code = int_of_string ("0x" ^ n) in
                         List.iter (Buffer.add_char buf) (utf16to8 code);
                         jsx_text env mode buf raw lexbuf
                       )
-# 5020 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 5020 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 4 ->
 let
-# 1455 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1455 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                     n
-# 5026 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 5026 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 2) (lexbuf.Lexing.lex_curr_pos + -1)
 and
-# 1455 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1455 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                               s
-# 5031 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 5031 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_curr_pos in
-# 1456 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1456 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Buffer.add_string raw s;
                         let code = int_of_string n in
                         List.iter (Buffer.add_char buf) (utf16to8 code);
                         jsx_text env mode buf raw lexbuf
                       )
-# 5039 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 5039 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 5 ->
 let
-# 1461 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1461 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                        entity
-# 5045 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 5045 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1) (lexbuf.Lexing.lex_curr_pos + -1)
 and
-# 1461 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1461 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                                       s
-# 5050 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 5050 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_curr_pos in
-# 1462 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1462 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       (
                         Buffer.add_string raw s;
                         let code = match entity with
@@ -5311,19 +5311,19 @@ and
                         | None -> Buffer.add_string buf ("&" ^ entity ^";"));
                         jsx_text env mode buf raw lexbuf
                       )
-# 5315 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 5315 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 6 ->
 let
-# 1724 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1724 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
          c
-# 5321 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 5321 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf lexbuf.Lexing.lex_start_pos in
-# 1724 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1724 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Buffer.add_char raw c;
                         Buffer.add_char buf c;
                         jsx_text env mode buf raw lexbuf )
-# 5327 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 5327 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; 
       __ocaml_lex_jsx_text_rec env mode buf raw lexbuf __ocaml_lex_state
@@ -5333,37 +5333,37 @@ and template_tail env lexbuf =
 and __ocaml_lex_template_tail_rec env lexbuf __ocaml_lex_state =
   match Lexing.engine __ocaml_lex_tables __ocaml_lex_state lexbuf with
       | 0 ->
-# 1730 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1730 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Lexing.new_line lexbuf;
                         template_tail env lexbuf )
-# 5340 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 5340 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 1 ->
-# 1732 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1732 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( unicode_fix_cols lexbuf;
                         template_tail env lexbuf )
-# 5346 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 5346 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 2 ->
-# 1734 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1734 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( let start = loc_of_lexbuf env lexbuf in
                         let buf = Buffer.create 127 in
                         let env, _end = line_comment env buf lexbuf in
                         let env = save_comment env start _end buf true in
                         template_tail env lexbuf )
-# 5355 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 5355 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 3 ->
-# 1739 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1739 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( let start = loc_of_lexbuf env lexbuf in
                         let buf = Buffer.create 127 in
                         let env, _end = comment env buf lexbuf in
                         let env = save_comment env start _end buf true in
                         template_tail env lexbuf )
-# 5364 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 5364 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 4 ->
-# 1744 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1744 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( let start = loc_of_lexbuf env lexbuf in
                         let cooked = Buffer.create 127 in
                         let raw = Buffer.create 127 in
@@ -5377,10 +5377,10 @@ and __ocaml_lex_template_tail_rec env lexbuf __ocaml_lex_state =
                           literal = Buffer.contents literal;
                         }, is_tail))
                       )
-# 5381 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 5381 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 5 ->
-# 1757 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1757 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( let env = illegal env (loc_of_lexbuf env lexbuf) in
                         env, (T_TEMPLATE_PART (
                           loc_of_lexbuf env lexbuf,
@@ -5388,7 +5388,7 @@ and __ocaml_lex_template_tail_rec env lexbuf __ocaml_lex_state =
                           true
                         ))
                       )
-# 5392 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 5392 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; 
       __ocaml_lex_template_tail_rec env lexbuf __ocaml_lex_state
@@ -5398,25 +5398,25 @@ and template_part env start cooked raw literal lexbuf =
 and __ocaml_lex_template_part_rec env start cooked raw literal lexbuf __ocaml_lex_state =
   match Lexing.engine __ocaml_lex_tables __ocaml_lex_state lexbuf with
       | 0 ->
-# 1766 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1766 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( let env = illegal env (loc_of_lexbuf env lexbuf) in
                         env, Loc.btwn start (loc_of_lexbuf env lexbuf), true )
-# 5405 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 5405 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 1 ->
-# 1768 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1768 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Buffer.add_char literal '`';
                         env, Loc.btwn start (loc_of_lexbuf env lexbuf), true )
-# 5411 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 5411 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 2 ->
-# 1770 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1770 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Buffer.add_string literal "${";
                         env, Loc.btwn start (loc_of_lexbuf env lexbuf), false )
-# 5417 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 5417 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 3 ->
-# 1772 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1772 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Buffer.add_char raw '\\';
                         Buffer.add_char literal '\\';
                         let env, _ = string_escape env cooked lexbuf in
@@ -5424,55 +5424,55 @@ and __ocaml_lex_template_part_rec env start cooked raw literal lexbuf __ocaml_le
                         Buffer.add_string raw str;
                         Buffer.add_string literal str;
                         template_part env start cooked raw literal lexbuf )
-# 5428 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 5428 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 4 ->
 let
-# 1782 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1782 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
               lf
-# 5434 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 5434 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos (lexbuf.Lexing.lex_start_pos + 2) in
-# 1783 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1783 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Buffer.add_string raw lf;
                         Buffer.add_string literal lf;
                         Buffer.add_string cooked "\n";
                         Lexing.new_line lexbuf;
                         template_part env start cooked raw literal lexbuf )
-# 5442 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 5442 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 5 ->
 let
-# 1788 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1788 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                      lf
-# 5448 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 5448 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf lexbuf.Lexing.lex_start_pos in
-# 1789 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1789 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Buffer.add_char raw lf;
                         Buffer.add_char literal lf;
                         Buffer.add_char cooked '\n';
                         Lexing.new_line lexbuf;
                         template_part env start cooked raw literal lexbuf )
-# 5456 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 5456 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | 6 ->
 let
-# 1794 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1794 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
          c
-# 5462 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 5462 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 = Lexing.sub_lexeme_char lexbuf lexbuf.Lexing.lex_start_pos in
-# 1794 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1794 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
                       ( Buffer.add_char raw c;
                         Buffer.add_char literal c;
                         Buffer.add_char cooked c;
                         template_part env start cooked raw literal lexbuf )
-# 5469 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 5469 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
 
   | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; 
       __ocaml_lex_template_part_rec env start cooked raw literal lexbuf __ocaml_lex_state
 
 ;;
 
-# 1799 "/Users/javi/Development/github/rebind/vendor/lexer_flow.mll"
+# 1799 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.mll"
  
   let regexp env =
     get_result_and_clear_state (regexp env env.lex_lb)
@@ -5498,4 +5498,4 @@ let
   let token env =
     get_result_and_clear_state (token env env.lex_lb)
 
-# 5502 "/Users/javi/Development/github/rebind/vendor/lexer_flow.ml"
+# 5502 "/Users/javi/Development/github/rebind/vendor/flow/lexer_flow.ml"
