@@ -2,6 +2,18 @@
   "name": "rebind",
   "version": "0.0.1",
   "bs-dev-dependencies": ["@glennsl/bs-jest"],
+  "entries": [
+    {
+      "backend": "native",
+      "main-module": "MainNative",
+      "output-name": "Rebind.exe"
+    },
+    {
+      "backend": "js",
+      "main-module": "MainJs",
+      "output-name": "Rebind.js"
+    }
+  ],
   "generators": [
     {
       "name": "ocamllex",
@@ -10,7 +22,7 @@
   ],
   "sources": [
     {
-      "dir": "node_modules/bs-platform/vendor/ocaml/parsing",
+      "dir": "vendor/ocaml/parsing",
       "files": [
         "ast_helper.mli",
         "ast_helper.ml",
@@ -24,7 +36,7 @@
       ]
     },
     {
-      "dir": "node_modules/bs-platform/vendor/ocaml/utils",
+      "dir": "vendor/ocaml/utils",
       "files": [
         "clflags.mli",
         "clflags.ml",
@@ -44,13 +56,19 @@
           "dir": "shared"
         },
         {
-          "dir": "js"
+          "dir": "native",
+          "backend": "native"
+        },
+        {
+          "dir": "js",
+          "backend": "js"
         }
       ]
     },
     {
       "dir": "__tests__",
-      "type": "dev"
+      "type": "dev",
+      "backend": "js"
     },
     {
       "dir": "vendor/flow",
@@ -68,6 +86,7 @@
   },
   "suffix": ".bs.js",
   "warnings": {
+    "number": "-44-27-6",
     "error": "+101"
   },
   "namespace": true,

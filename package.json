@@ -6,23 +6,22 @@
   "main": "main.re",
   "dependencies": {},
   "bin": {
-    "rebind": "./_build/src/native/Main.native"
+    "rebind": "./lib/bs/native/Rebind.exe"
   },
   "jest": {
     "testPathIgnorePatterns": ["<rootDir>/__tests__/input/", "<rootDir>/node_modules/"]
   },
   "scripts": {
-    "build": "rebuild -no-hygiene -X lib -I vendor/flow -I src/shared -I src/native -no-links -package compiler-libs.common -package unix ./src/native/Main.native",
-    "build:js": "bsb -make-world",
-    "clean:js": "bsb -clean-world",
-    "start": "./_build/src/native/Main.native ./__tests__/input/001.test.js | refmt --parse binary --print re",
+    "build": "bsb -make-world -backend native",
+    "build:js": "bsb -make-world -backend js",
+    "clean": "bsb -clean-world",
+    "start": "./lib/bs/native/Rebind.exe ./__tests__/input/001.test.js | refmt --parse binary --print re",
     "start:js": "node ./src/js/Main.bs.js ./__tests__/input/007.test.js",
     "getReasonAst": "refmt --print ast ./getReasonAst.re",
-    "preinstall": "npm run build",
-    "test": "npm run build && jest"
+    "test": "npm run build && npm run build:js && jest"
   },
   "devDependencies": {
     "@glennsl/bs-jest": "^0.4.2",
-    "bs-platform": "^3.0.0"
+    "bs-platform": "bsansouci/bsb-native#release"
   }
 }
