@@ -189,3 +189,28 @@ type somethingBlue;
 [@bs.module] external somethingBlue: string => somethingBlue = \\"SomethingBlue\\";
 "
 `;
+
+exports[`test18 - then as reserved word 1`] = `
+"type stripe;
+type result;
+type callback;
+type createToken;
+type then_;
+[@bs.module] external stripe: stripe = \\"\\";
+[@bs.send] external createToken: (stripe, string) => createToken = \\"\\";
+[@bs.send] external then_: (createToken, result => callback) => then_ = \\"then\\";
+"
+`;
+
+exports[`test19 - dots and other strange chars in import names 1`] = `
+"type bnjs;
+type add;
+type stripe;
+type stripejs;
+type createToken;
+[@bs.new] [@bs.module] external bnjs: (string, float) => bnjs = \\"bn.js\\";
+[@bs.send] external add: (bnjs, bnjs) => add = \\"\\";
+[@bs.module] external stripejs: stripejs = \\"stripe-js\\";
+[@bs.send] external createToken: (stripejs, string) => createToken = \\"\\";
+"
+`;

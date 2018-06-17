@@ -4,6 +4,21 @@ open Ast_helper;
 
 open Longident;
 
+let stripChars = (s, cs) => {
+  let len = String.length(s);
+  let res = Bytes.create(len);
+  let rec aux = (i, j) =>
+    if (i >= len) {
+      Bytes.sub(res, 0, j);
+    } else if (Bytes.contains(cs, s.[i])) {
+      aux(succ(i), j);
+    } else {
+      Bytes.set(res, j, s.[i]);
+      aux(succ(i), succ(j));
+    };
+   Bytes.to_string(aux(0, 0));
+};
+
 /* helpers */
 /* TODO: turn foo_bar into foo_bar_ */
 let correctIdentifier = ident => {
@@ -23,7 +38,7 @@ let correctIdentifier = ident => {
        Foo => foo
        _foo => foo
        _foo_bar => foo_bar_ */
-    let correctedName = stripLeadingUnderscores(ident);
+    let correctedName = stripLeadingUnderscores(ident) |. stripChars(Bytes.of_string(".-"));
     let correctedName =
       String.contains(correctedName, '_') ?
         correctedName ++ "_" : correctedName;
@@ -33,6 +48,7 @@ let correctIdentifier = ident => {
     | "object" => "object_"
     | "type" => "type_"
     | "done" => "done_"
+    | "then" => "then_"
     | n => n
     };
   };

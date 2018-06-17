@@ -107,3 +107,23 @@ Expect.(
     expect(getOutput("016.test")) |> toMatchSnapshot
   )
 );
+
+Expect.(
+  test("test17 - unexpected token error", () =>
+    expect(() =>
+      getOutput(~error=true, "017.test")
+    ) |> toThrow
+  )
+);
+
+Expect.(
+  test("test18 - then as reserved word", () =>
+    expect(getOutput("018.test")) |> toMatchSnapshot
+  )
+);
+
+Expect.(
+  test("test19 - dots and other strange chars in import names", () =>
+    expect(getOutput("019.test")) |> toMatchSnapshot
+  )
+);
