@@ -1,10 +1,16 @@
 open Jest;
 
-let getOutput = testName =>
+let binaryPath = testName => {j|./lib/bs/native/Rebind.exe ./__tests__/input/$testName.js|j};
+let pipeToRefmt = {j| | refmt --parse binary --print re|j};
+let getOutput = (~error=false, testName) => {
+  let command =
+    error ? binaryPath(testName) : binaryPath(testName) ++ pipeToRefmt;
+
   Node.Child_process.execSync(
-    {j|./lib/bs/native/Rebind.exe ./__tests__/input/$testName.js | refmt --parse binary --print re|j},
+    command,
     Node.Child_process.option(~encoding="utf8", ()),
   );
+};
 
 Expect.(
   test("test1 - Basic functions", () =>
@@ -65,7 +71,6 @@ Expect.(
     expect(getOutput("010.test")) |> toMatchSnapshot
   )
 );
-
 
 Expect.(
   test("test11 - Case with `new`", () =>

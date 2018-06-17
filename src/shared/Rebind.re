@@ -34,7 +34,7 @@ let getBindings = (file, content) => {
     );
   let (ast, _) =
     Parser_flow.program_file(
-      ~fail=false,
+      ~fail=true,
       ~parse_options,
       content,
       Some(Loc.SourceFile(file)),
