@@ -4,13 +4,13 @@ open Ast_helper;
 
 open Longident;
 
-let stripChars = (s, cs) => {
+let stripChars = (charsToStrip, s) => {
   let len = String.length(s);
   let res = Bytes.create(len);
   let rec aux = (i, j) =>
     if (i >= len) {
       Bytes.sub(res, 0, j);
-    } else if (Bytes.contains(cs, s.[i])) {
+    } else if (Bytes.contains(charsToStrip, s.[i])) {
       aux(succ(i), j);
     } else {
       Bytes.set(res, j, s.[i]);
@@ -38,7 +38,7 @@ let correctIdentifier = ident => {
        Foo => foo
        _foo => foo
        _foo_bar => foo_bar_ */
-    let correctedName = stripLeadingUnderscores(ident) |. stripChars(Bytes.of_string(".-"));
+    let correctedName = stripLeadingUnderscores(ident) |> stripChars(Bytes.of_string(".-"));
     let correctedName =
       String.contains(correctedName, '_') ?
         correctedName ++ "_" : correctedName;
