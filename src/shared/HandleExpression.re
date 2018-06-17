@@ -27,7 +27,7 @@ let maybeAddIdentifier = (~customType=?, state, name) => {
     switch (Utils.tryFindId(name, state.identifiers)) {
     | Some(existingType) => (existingType, state.outputTypes)
     | None => (
-        Utils.getWithDefault(customType, Abstract(name)),
+        Belt.Option.getWithDefault(customType, Abstract(name)),
         [name, ...state.outputTypes],
       )
     };

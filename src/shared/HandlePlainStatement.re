@@ -40,7 +40,7 @@ let h = (state: SharedTypes.state, (_, statement)) => {
                  );
                state;
              | ImportNamedSpecifier({local, remote}) =>
-               let (_loc, localName) = Utils.getWithDefault(local, remote);
+               let (_loc, localName) = Belt.Option.getWithDefault(local, remote);
                let (_loc, remoteName) = remote;
                let (state, _lastType) =
                  HandleExpression.maybeAddIdentifier(
