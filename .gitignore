@@ -20,5 +20,5 @@ flow.docdir
 .DS_Store
 .merlin
 .bsb.lock
-/lib/bs/
+lib/bs/
 *.bs.js

@@ -2,7 +2,7 @@ open Jest;
 
 let getOutput = testName =>
   Node.Child_process.execSync(
-    {j|./_build/src/native/Main.native ./__tests__/input/$testName.js | refmt --parse binary --print re|j},
+    {j|./lib/bs/native/Rebind.exe ./__tests__/input/$testName.js | refmt --parse binary --print re|j},
     Node.Child_process.option(~encoding="utf8", ()),
   );
 

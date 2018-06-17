@@ -1,4 +1,4 @@
 .DS_Store
 npm-debug.log
-/_build/*
-!/_build/main.native
+/lib/*
+!/lib/bs/native/Rebind.exe
