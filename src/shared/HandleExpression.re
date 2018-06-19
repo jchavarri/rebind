@@ -203,7 +203,12 @@ and h = (state, (_, expression)) =>
         switch (Utils.tryFindId(name, state.identifiers)) {
         | Some(Module(n)) => maybeAddExternal(state, Module, n, [])
         | Some(ModuleProperty(moduleName, local, remote)) =>
-          maybeAddExternal(state, ScopedModule(moduleName, remote), local, [])
+          maybeAddExternal(
+            state,
+            ScopedModule(moduleName, remote),
+            local,
+            [],
+          )
         | _ => maybeAddExternal(state, Val, name, [])
         }
       | _ => h(state, _object)
@@ -214,6 +219,7 @@ and h = (state, (_, expression)) =>
     | PropertyExpression(_) => failwith("Member.PropertyExpression")
     };
   | Object(obj) =>
+    let originalContextName = state.parentContextName;
     let (state, objTypes) =
       obj.properties
       |> List.fold_left(
@@ -224,7 +230,6 @@ and h = (state, (_, expression)) =>
                | SpreadProperty(_) =>
                  failwith("Spread properties are unsupported")
                };
-             let (propState, propType) = h(accState, property.value);
              let propertyName =
                switch (property.key) {
                | Identifier((_loc, name)) => name
@@ -232,6 +237,11 @@ and h = (state, (_, expression)) =>
                | Computed(_) =>
                  failwith("Computed properties in objects are unsupported")
                };
+             let (propState, propType) =
+               h(
+                 {...accState, parentContextName: propertyName},
+                 property.value,
+               );
              let namedType = Named(propertyName, propType);
              (propState, [namedType, ...accTypes]);
            },
@@ -240,7 +250,7 @@ and h = (state, (_, expression)) =>
     maybeAddExternal(
       state,
       ObjectCreation,
-      state.parentContextName,
+      originalContextName,
       objTypes @ [Unit],
     );
   | This

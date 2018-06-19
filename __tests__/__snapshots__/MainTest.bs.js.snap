@@ -134,11 +134,16 @@ exports[`test11 - Case with \`new\` 1`] = `
 type region;
 type authenticationType;
 type apiKey;
+type auth;
 type aWSAppSyncClientParam;
 type aWSAppSyncClient;
 [@bs.obj]
+external makeAuth: (~apiKey: apiKey, ~type: authenticationType, unit) => auth =
+  \\"\\";
+[@bs.obj]
 external makeAWSAppSyncClientParam:
-  (~apiKey: apiKey, ~type: authenticationType, unit) => aWSAppSyncClientParam =
+  (~auth: auth, ~region: region, ~url: graphqlEndpoint, unit) =>
+  aWSAppSyncClientParam =
   \\"\\";
 [@bs.new]
 external aWSAppSyncClient: aWSAppSyncClientParam => aWSAppSyncClient =
