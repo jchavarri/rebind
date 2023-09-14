@@ -23,3 +23,4 @@ flow.docdir
 lib/bs/
 *.bs.js
 _opam
+.vscode
