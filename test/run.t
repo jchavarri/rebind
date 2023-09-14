@@ -6,7 +6,7 @@ Basic functions
 
   $ rebind input.js
   type nano
-  external nano : string -> float -> nano = "Nano"[@@bs.val ]
+  external nano : string -> float -> nano = "Nano"
 
 Require statements, more than one statement
 
@@ -18,8 +18,8 @@ Require statements, more than one statement
   $ rebind input.js
   type nano
   type blue
-  external nano : float -> string -> float -> nano = ""[@@bs.module ]
-  external blue : string -> blue = ""[@@bs.module ]
+  external nano : float -> string -> float -> nano = ""[@@mel.module ]
+  external blue : string -> blue = ""[@@mel.module ]
 
 Track identifiers across statements
 
@@ -30,7 +30,7 @@ Track identifiers across statements
 
   $ rebind input.js
   type nano
-  external nano : float -> string -> float -> nano = ""[@@bs.module ]
+  external nano : float -> string -> float -> nano = ""[@@mel.module ]
 
 Single require
 
@@ -57,12 +57,12 @@ Basic object property access
   type blue
   type pill
   type jump
-  external nano : string -> nano = ""[@@bs.module ]
-  external db : nano -> db = ""[@@bs.get ]
-  external test : db -> float -> test = ""[@@bs.send ]
-  external blue : blue = ""[@@bs.module ]
-  external pill : blue -> pill = ""[@@bs.get ]
-  external jump : pill -> float -> jump = ""[@@bs.send ]
+  external nano : string -> nano = ""[@@mel.module ]
+  external db : nano -> db = ""[@@mel.get ]
+  external test : db -> float -> test = ""[@@mel.send ]
+  external blue : blue = ""[@@mel.module ]
+  external pill : blue -> pill = ""[@@mel.get ]
+  external jump : pill -> float -> jump = ""[@@mel.send ]
 
 Functions as callbacks
 
@@ -80,11 +80,11 @@ Functions as callbacks
   type callback
   type db
   type create
-  external nano : string -> nano = ""[@@bs.module ]
-  external db : nano -> db = ""[@@bs.get ]
+  external nano : string -> nano = ""[@@mel.module ]
+  external db : nano -> db = ""[@@mel.get ]
   external create :
     db -> string -> (err -> body -> headers -> callback) -> create = ""
-  [@@bs.send ]
+  [@@mel.send ]
 
 Object constants
 
@@ -101,10 +101,10 @@ Object constants
   type configureParam
   type configure
   external makeConfigureParam :
-    apiKey:string -> endpointUrl:string -> unit -> configureParam = ""[@@bs.obj
+    apiKey:string -> endpointUrl:string -> unit -> configureParam = ""[@@mel.obj
                                                                       ]
-  external airtable2 : airtable2 = "airtable"[@@bs.module ]
-  external configure : airtable2 -> configureParam -> configure = ""[@@bs.send
+  external airtable2 : airtable2 = "airtable"[@@mel.module ]
+  external configure : airtable2 -> configureParam -> configure = ""[@@mel.send
                                                                       ]
 
 Objects, properties, callbacks, modules
@@ -151,18 +151,18 @@ Objects, properties, callbacks, modules
   type select
   type eachPage
   external makeConfigureParam :
-    apiKey:string -> endpointUrl:string -> unit -> configureParam = ""[@@bs.obj
+    apiKey:string -> endpointUrl:string -> unit -> configureParam = ""[@@mel.obj
                                                                       ]
-  external airtable2 : airtable2 = "airtable"[@@bs.module ]
-  external configure : airtable2 -> configureParam -> configure = ""[@@bs.send
+  external airtable2 : airtable2 = "airtable"[@@mel.module ]
+  external configure : airtable2 -> configureParam -> configure = ""[@@mel.send
                                                                       ]
-  external base : airtable2 -> string -> base = ""[@@bs.send ]
+  external base : airtable2 -> string -> base = ""[@@mel.send ]
   external makeSelectParam :
-    view:string -> maxRecords:float -> unit -> selectParam = ""[@@bs.obj ]
-  external select : base -> selectParam -> select = ""[@@bs.send ]
+    view:string -> maxRecords:float -> unit -> selectParam = ""[@@mel.obj ]
+  external select : base -> selectParam -> select = ""[@@mel.send ]
   external eachPage :
     select -> (records -> fetchNextPage -> page) -> (err -> done_) -> eachPage
-      = ""[@@bs.send ]
+      = ""[@@mel.send ]
 
 Identifiers with same name
 
@@ -175,9 +175,9 @@ Identifiers with same name
   type jPush
   type jPush2
   type initPush
-  external jPush : jPush = "JPush"[@@bs.val ]
-  external jPush2 : jPush -> jPush2 = "jPush"[@@bs.get ]
-  external initPush : jPush2 -> initPush = ""[@@bs.send ]
+  external jPush : jPush = "JPush"
+  external jPush2 : jPush -> jPush2 = "jPush"[@@mel.get ]
+  external initPush : jPush2 -> initPush = ""[@@mel.send ]
 
 Stripe example
 
@@ -201,13 +201,13 @@ Stripe example
   type callback
   type customers
   type create
-  external stripe : string -> stripe = ""[@@bs.module ]
-  external makeCreateParam : email:string -> unit -> createParam = ""[@@bs.obj
+  external stripe : string -> stripe = ""[@@mel.module ]
+  external makeCreateParam : email:string -> unit -> createParam = ""[@@mel.obj
                                                                       ]
-  external customers : stripe -> customers = ""[@@bs.get ]
+  external customers : stripe -> customers = ""[@@mel.get ]
   external create :
     customers -> createParam -> (err -> customer -> callback) -> create = ""
-  [@@bs.send ]
+  [@@mel.send ]
 
 Case with `new`
 
@@ -232,13 +232,13 @@ Case with `new`
   type aWSAppSyncClientParam
   type aWSAppSyncClient
   external makeAuth :
-    apiKey:apiKey -> type:authenticationType -> unit -> auth = ""[@@bs.obj ]
+    apiKey:apiKey -> type:authenticationType -> unit -> auth = ""[@@mel.obj ]
   external makeAWSAppSyncClientParam :
     auth:auth ->
       region:region -> url:graphqlEndpoint -> unit -> aWSAppSyncClientParam =
-      ""[@@bs.obj ]
+      ""[@@mel.obj ]
   external aWSAppSyncClient :
-    aWSAppSyncClientParam -> aWSAppSyncClient = "AWSAppSyncClient"[@@bs.new ]
+    aWSAppSyncClientParam -> aWSAppSyncClient = "AWSAppSyncClient"[@@mel.new ]
 
 `new` from a module
 
@@ -249,8 +249,9 @@ Case with `new`
 
   $ rebind input.js
   type somethingBlue
-  external somethingBlue : string -> somethingBlue = "SomethingBlue"[@@bs.new ]
-  [@@bs.module ]
+  external somethingBlue : string -> somethingBlue = "SomethingBlue"[@@mel.new
+                                                                      ]
+  [@@mel.module ]
 
 named `import`
 
@@ -261,7 +262,7 @@ named `import`
 
   $ rebind input.js
   type blue
-  external blue : string -> blue = "Blue"[@@bs.module "SomethingBlue"]
+  external blue : string -> blue = "Blue"[@@mel.module "SomethingBlue"]
 
 default imports
 
@@ -284,12 +285,13 @@ default imports
   type init
   type success
   type error
-  external keycloak : string -> keycloak = "default"[@@bs.module "keycloak-js"]
-  external makeInitParam : onLoad:string -> unit -> initParam = ""[@@bs.obj ]
-  external init : keycloak -> initParam -> init = ""[@@bs.send ]
+  external keycloak : string -> keycloak = "default"[@@mel.module
+                                                      "keycloak-js"]
+  external makeInitParam : onLoad:string -> unit -> initParam = ""[@@mel.obj ]
+  external init : keycloak -> initParam -> init = ""[@@mel.send ]
   external success : init -> (authenticated -> callback) -> success = ""
-  [@@bs.send ]
-  external error : success -> callback -> error = ""[@@bs.send ]
+  [@@mel.send ]
+  external error : success -> callback -> error = ""[@@mel.send ]
 
 named imports with local name
 
@@ -302,8 +304,8 @@ named imports with local name
   $ rebind input.js
   type green
   type green2
-  external green : string -> green = "Blue"[@@bs.module "SomethingBlue"]
-  external green2 : float -> green2 = "green"[@@bs.val ]
+  external green : string -> green = "Blue"[@@mel.module "SomethingBlue"]
+  external green2 : float -> green2 = "green"
 
 namespaced imports
 
@@ -315,7 +317,7 @@ namespaced imports
   $ rebind input.js
   type blue
   type somethingBlue
-  external somethingBlue : string -> somethingBlue = "SomethingBlue"[@@bs.module
+  external somethingBlue : string -> somethingBlue = "SomethingBlue"[@@mel.module
                                                                       ]
 
 unexpected token error
@@ -341,10 +343,10 @@ then as reserved word
   type callback
   type createToken
   type then_
-  external stripe : stripe = ""[@@bs.module ]
-  external createToken : stripe -> string -> createToken = ""[@@bs.send ]
+  external stripe : stripe = ""[@@mel.module ]
+  external createToken : stripe -> string -> createToken = ""[@@mel.send ]
   external then_ : createToken -> (result -> callback) -> then_ = "then"
-  [@@bs.send ]
+  [@@mel.send ]
 
 dots and other strange chars in import names
 
@@ -366,8 +368,8 @@ dots and other strange chars in import names
   type stripe
   type stripejs
   type createToken
-  external bnjs : string -> float -> bnjs = "bn.js"[@@bs.new ][@@bs.module ]
-  external add : bnjs -> bnjs -> add = ""[@@bs.send ]
-  external stripejs : stripejs = "stripe-js"[@@bs.module ]
-  external createToken : stripejs -> string -> createToken = ""[@@bs.send ]
+  external bnjs : string -> float -> bnjs = "bn.js"[@@mel.new ][@@mel.module ]
+  external add : bnjs -> bnjs -> add = ""[@@mel.send ]
+  external stripejs : stripejs = "stripe-js"[@@mel.module ]
+  external createToken : stripejs -> string -> createToken = ""[@@mel.send ]
 

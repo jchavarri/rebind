@@ -4,7 +4,7 @@ Experimental automated generation of Reason/BuckleScript bindings from JavaScrip
 
 ## Status
 
-Rebind is in very early stages. While a few BuckleScript attributes have some minimal support (`[@bs.obj]`, `[@bs.send]`, `[@bs.module]`, ...), the range of JavaScript expressions that are not covered is still quite large (see table below).
+Rebind is in very early stages. While a few BuckleScript attributes have some minimal support (`[@mel.obj]`, `[@mel.send]`, `[@mel.module]`, ...), the range of JavaScript expressions that are not covered is still quite large (see table below).
 
 ## Why
 
@@ -26,9 +26,9 @@ type body;
 type headers;
 type db;
 type create;
-[@bs.module] external nano : string => nano = "";
-[@bs.get] external db : nano => db = "";
-[@bs.send]
+[@mel.module] external nano : string => nano = "";
+[@mel.get] external db : nano => db = "";
+[@mel.send]
 external create : (db, string, (err, body, headers) => unit) => create = "";
 ```
 
@@ -78,8 +78,8 @@ const result = something.awesome("test");
 ```reason
 type something;
 type awesome;
-[@bs.module] external something : something = "";
-[@bs.send] external awesome : (something, string) => awesome = "";
+[@mel.module] external something : something = "";
+[@mel.send] external awesome : (something, string) => awesome = "";
 ```
 
 As you can see, `something` is inferred to be an external module, and a companion opaque type is created for it.
@@ -95,11 +95,11 @@ Expression Name | Binding(s) generated | Status
 ------------ | ------------- | -------------
 Function | None, it iterates over params to get identifiers | :hatching_chick:
 ArrowFunction | None, it iterates over params to get identifiers | :hatching_chick:
-Identifier | `[@bs.module]` | :hatching_chick:
+Identifier | `[@mel.module]` | :hatching_chick:
 Literal | None, return types for bindings to be used | :hatching_chick:
-Call | `[@bs.module]` or `[@bs.send]` | :hatching_chick:
-Member | `[@bs.get]` | :hatching_chick:
-Object | `[@bs.obj]` | :hatching_chick:
+Call | `[@mel.module]` or `[@mel.send]` | :hatching_chick:
+Member | `[@mel.get]` | :hatching_chick:
+Object | `[@mel.obj]` | :hatching_chick:
 This | - | :egg:
 Super | - | :egg:
 Array | - | :egg:

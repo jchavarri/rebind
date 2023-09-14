@@ -133,15 +133,15 @@ let externalWithAttribute = (originalName, types, safeIds, attr) => {
   let newName = OrigToSafeMap.find(originalName, safeIds);
   let (outputAttrs, descFromStatement) =
     switch (attr) {
-    | Module => ([("bs.module", None)], None)
-    | Send => ([("bs.send", None)], None)
-    | Get => ([("bs.get", None)], None)
-    | ObjectCreation => ([("bs.obj", None)], None)
-    | Val => ([("bs.val", None)], None)
-    | NewAttr => ([("bs.new", None)], None)
-    | ModuleAndNew => ([("bs.new", None), ("bs.module", None)], None)
+    | Module => ([("mel.module", None)], None)
+    | Send => ([("mel.send", None)], None)
+    | Get => ([("mel.get", None)], None)
+    | ObjectCreation => ([("mel.obj", None)], None)
+    | Val => ([], None)
+    | NewAttr => ([("mel.new", None)], None)
+    | ModuleAndNew => ([("mel.new", None), ("mel.module", None)], None)
     | ScopedModule(name, scopeProperty) => (
-        [("bs.module", Some(name))],
+        [("mel.module", Some(name))],
         Some(scopeProperty),
       )
     };
