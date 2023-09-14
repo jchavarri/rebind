@@ -1,2 +1,2 @@
 (cram
- (deps %{bin:rebind}))
+ (deps %{bin:melc} %{bin:rebind}))
