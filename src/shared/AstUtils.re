@@ -1,8 +1,4 @@
-open Asttypes;
-
-open Ast_helper;
-
-open Longident;
+open Ppxlib;
 
 let stripChars = (charsToStrip, s) => {
   let len = String.length(s);
@@ -42,7 +38,7 @@ let correctIdentifier = ident => {
     let correctedName =
       String.contains(correctedName, '_') ?
         correctedName ++ "_" : correctedName;
-    let correctedName = String.uncapitalize(correctedName);
+    let correctedName = String.uncapitalize_ascii(correctedName);
     /* correct other cases where the js name is a reserved ocaml/reason keyword */
     switch (correctedName) {
     | "object" => "object_"
@@ -54,7 +50,7 @@ let correctIdentifier = ident => {
   };
 };
 
-let astHelperStrLidIdent = (~correct=true, a) =>
+let astHelperStrLidIdent = (a) =>
   switch (a) {
   | [] => raise(Invalid_argument("identifier is empty."))
   | _ =>
@@ -67,5 +63,5 @@ let astHelperStrLidIdent = (~correct=true, a) =>
              Ldot(acc, curr),
            inner,
          );
-    {loc: default_loc.contents, txt: res};
+    {loc: Ast_helper. default_loc.contents, txt: res};
   };

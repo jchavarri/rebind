@@ -567,7 +567,7 @@ end = struct
     else ret
 
   let float_of_string str =
-    try Pervasives.float_of_string str
+    try Stdlib.float_of_string str
     with e when Sys.win32 ->
       try
         start str

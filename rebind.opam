@@ -1,0 +1,23 @@
+opam-version: "2.0"
+synopsis: "Rebind"
+description: "Experimental automated generation of Melange bindings from JavaScript code"
+maintainer: ["jchavarri"]
+authors: ["jchavarri"]
+license: "MIT"
+homepage: "https://github.com/jchavarri/rebind"
+bug-reports: "https://github.com/jchavarri/rebind/issues"
+depends: [
+  "ocaml"
+  "reason" {>= "3.10.0"}
+  "dune" {>= "3.9"}
+  "melange" {>= "1.0.0"}
+  "ppxlib"
+  "ocaml-lsp-server" {with-test} # todo: use with-dev-setup once 2.2 is out
+  "dot-merlin-reader" {with-test}
+  "odoc" {with-doc}
+]
+dev-repo: "git+https://github.com/jchavarri/rebind.git"
+pin-depends: [
+  ["melange.dev"           "git+https://github.com/melange-re/melange.git#e114ad55d185badeb32b3c766c9ab547495eac1b"]
+  ["reason.3.10.0"         "git+https://github.com/reasonml/reason.git#972261dab3b651ff8ab9b8b9fcc32940595073dc"]
+]

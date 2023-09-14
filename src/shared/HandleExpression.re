@@ -45,7 +45,7 @@ let maybeAddExternal = (state, externalAttr, name, inputTypes) => {
   let (state, lastType) = maybeAddIdentifier(state, name);
   let name =
     switch (externalAttr) {
-    | ObjectCreation => String.concat("", ["make", String.capitalize(name)])
+    | ObjectCreation => String.concat("", ["make", String.capitalize_ascii(name)])
     | _ => name
     };
   /* Add the potential `make*` identifier */

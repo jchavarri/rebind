@@ -1,13 +1,15 @@
+open Ppxlib;
+
 open Ast_helper;
 
-open Parsetree;
+module Builder = Ast_builder.Default;
 
 open SharedTypes;
 
 module OrigToSafeMap = Map.Make(String);
 
 let findWithDefault = (x, xs) =>
-  try (SharedTypes.Identifiers.find(x, xs)) {
+  try(SharedTypes.Identifiers.find(x, xs)) {
   | Not_found => x
   };
 
@@ -34,20 +36,21 @@ let externalTypeToString = t =>
 let typeConstr = (externalType, safeIds) => {
   ptyp_desc:
     Ptyp_constr(
-      AstUtils.astHelperStrLidIdent(
-        ~correct=true,
-        [findWithDefault(externalTypeToString(externalType), safeIds)],
-      ),
+      AstUtils.astHelperStrLidIdent([
+        findWithDefault(externalTypeToString(externalType), safeIds),
+      ]),
       [],
     ),
   ptyp_loc: default_loc.contents,
   ptyp_attributes: [],
+  ptyp_loc_stack: [],
 };
 
 let typeArrow = (a, b, label) => {
   ptyp_desc: Ptyp_arrow(label, a, b),
   ptyp_loc: default_loc.contents,
   ptyp_attributes: [],
+  ptyp_loc_stack: [],
 };
 
 let typeFromExternalTypes = (typesList, safeIds) => {
@@ -57,12 +60,16 @@ let typeFromExternalTypes = (typesList, safeIds) => {
       | ([], Some(t)) => t
       | ([Fun(name, l), ...xl], Some(a)) =>
         let funTypes = l @ [Abstract(findWithDefault(name, safeIds))];
-        process(xl, Some(typeArrow(rootType(funTypes), a, "")));
+        process(xl, Some(typeArrow(rootType(funTypes), a, Nolabel)));
       | ([Named(name, type_), ...xl], Some(a)) =>
         process(
           xl,
           Some(
-            typeArrow(rootType([type_]), a, findWithDefault(name, safeIds)),
+            typeArrow(
+              rootType([type_]),
+              a,
+              Labelled(findWithDefault(name, safeIds)),
+            ),
           ),
         )
       | (
@@ -71,6 +78,7 @@ let typeFromExternalTypes = (typesList, safeIds) => {
             ptyp_loc,
             ptyp_attributes,
             ptyp_desc: Ptyp_constr(bLoc, bList),
+            ptyp_loc_stack: _,
           }),
         ) =>
         process(
@@ -82,8 +90,9 @@ let typeFromExternalTypes = (typesList, safeIds) => {
                 ptyp_loc,
                 ptyp_attributes,
                 ptyp_desc: Ptyp_constr(bLoc, bList),
+                ptyp_loc_stack: [],
               },
-              "",
+              Nolabel,
             ),
           ),
         )
@@ -94,6 +103,7 @@ let typeFromExternalTypes = (typesList, safeIds) => {
             ptyp_loc,
             ptyp_attributes,
             ptyp_desc: Ptyp_arrow(bLabel, bType1, bType2),
+            ptyp_loc_stack: _,
           }),
         ) =>
         process(
@@ -105,8 +115,9 @@ let typeFromExternalTypes = (typesList, safeIds) => {
                 ptyp_loc,
                 ptyp_attributes,
                 ptyp_desc: Ptyp_arrow(bLabel, bType1, bType2),
+                ptyp_loc_stack: [],
               },
-              "",
+              Nolabel,
             ),
           ),
         )
@@ -129,14 +140,52 @@ let externalWithAttribute = (originalName, types, safeIds, attr) => {
     | Val => ([("bs.val", None)], None)
     | NewAttr => ([("bs.new", None)], None)
     | ModuleAndNew => ([("bs.new", None), ("bs.module", None)], None)
-    | ScopedModule(name, scopeProperty) => ([("bs.module", Some(name))], Some(scopeProperty))
+    | ScopedModule(name, scopeProperty) => (
+        [("bs.module", Some(name))],
+        Some(scopeProperty),
+      )
     };
-  let valueDescription = switch (descFromStatement, newName == originalName) {
-  | (Some(desc), _) => desc
-  | (None, false) => originalName
-  | (None, true) => ""
-  };
-  Str.primitive({
+  let valueDescription =
+    switch (descFromStatement, newName == originalName) {
+    | (Some(desc), _) => desc
+    | (None, false) => originalName
+    | (None, true) => ""
+    };
+  let attrs: Ppxlib.attributes =
+    outputAttrs
+    |> List.map(((outputAttr, constant)) => {
+         let constExpr: list(Parsetree.structure_item) =
+           switch (constant) {
+           | Some(c) => [
+               {
+                 pstr_desc:
+                   Pstr_eval(
+                     {
+                       pexp_desc:
+                         Pexp_constant(
+                           Pconst_string(c, Location.none, None),
+                         ),
+                       pexp_loc: default_loc.contents,
+                       pexp_attributes: [],
+                       pexp_loc_stack: [],
+                     },
+                     [],
+                   ),
+                 pstr_loc: default_loc.contents,
+               },
+             ]
+           | None => []
+           };
+         {
+           attr_loc: default_loc.contents,
+           attr_name: {
+             txt: outputAttr,
+             loc: Location.none,
+           },
+           attr_payload: PStr(constExpr),
+         };
+       });
+  let t: Parsetree.value_description = {
     pval_name: {
       loc: default_loc.contents,
       txt: newName,
@@ -144,33 +193,9 @@ let externalWithAttribute = (originalName, types, safeIds, attr) => {
     pval_prim: [valueDescription],
     pval_loc: default_loc.contents,
     pval_type: typeFromExternalTypes(types, safeIds),
-    pval_attributes:
-      outputAttrs
-      |> List.map(((outputAttr, constant)) => {
-           let constExpr =
-             switch (constant) {
-             | Some(c) => [
-                 {
-                   pstr_desc:
-                     Pstr_eval(
-                       {
-                         pexp_desc: Pexp_constant(Const_string(c, None)),
-                         pexp_loc: default_loc.contents,
-                         pexp_attributes: [],
-                       },
-                       [],
-                     ),
-                   pstr_loc: default_loc.contents,
-                 },
-               ]
-             | None => []
-             };
-           (
-             {Location.loc: default_loc.contents, txt: outputAttr},
-             PStr(constExpr),
-           );
-         }),
-  });
+    pval_attributes: attrs,
+  };
+  Builder.pstr_primitive(~loc=Location.none, t);
 };
 
 let rec generateSafeId = (~postFix=None, name, safeToOrig) => {
@@ -214,16 +239,24 @@ let transform = state => {
   (
     List.rev(outputTypes)
     |> List.map(outputType =>
-         Str.type_([
-           Type.mk(
-             ~kind=Ptype_abstract,
-             ~priv=Public,
-             {
-               loc: default_loc.contents,
-               txt: OrigToSafeMap.find(outputType, safeIds),
-             },
-           ),
-         ])
+         Builder.pstr_type(
+           ~loc=Location.none,
+           Nonrecursive,
+           [
+             Builder.type_declaration(
+               ~loc=Location.none,
+               ~name={
+                 txt: OrigToSafeMap.find(outputType, safeIds),
+                 loc: Location.none,
+               },
+               ~params=[],
+               ~cstrs=[],
+               ~private_=Public,
+               ~manifest=None,
+               ~kind=Ptype_abstract,
+             ),
+           ],
+         )
        )
   )
   @ (

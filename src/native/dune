@@ -1,0 +1,4 @@
+(executable
+ (name rebind)
+ (public_name rebind)
+ (libraries ppxlib ppxlib.astlib shared unix))

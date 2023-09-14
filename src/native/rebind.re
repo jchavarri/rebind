@@ -11,7 +11,7 @@ let cat = filename => {
 let readStdin = () => {
   let out = ref(input_line(stdin));
   if (String.length(out^) > 0) {
-    try (
+    try(
       {
         while (true) {
           let line = input_line(stdin);
@@ -29,17 +29,15 @@ let readStdin = () => {
 
 let processContent = () => {
   let (file, content) =
-    if (Array.length(Sys.argv) != 2 && ! Unix.isatty(Unix.stdin)) {
+    if (Array.length(Sys.argv) != 2 && !Unix.isatty(Unix.stdin)) {
       ("stdin", readStdin());
     } else {
       let file = Sys.argv[1];
       let content = cat(file);
       (file, content);
     };
-  output_string(stdout, Config.ast_impl_magic_number);
-  output_value(stdout, file);
-  let result = Rebind.getBindings(file, content);
-  output_value(stdout, result);
+  let result = Shared.getBindings(file, content);
+  print_endline(Astlib.Pprintast.string_of_structure(result));
 };
 
 /* Ocaml  */

@@ -22,3 +22,4 @@ flow.docdir
 .bsb.lock
 lib/bs/
 *.bs.js
+_opam
