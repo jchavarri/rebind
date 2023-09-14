@@ -131,25 +131,22 @@ let typeFromExternalTypes = (typesList, safeIds) => {
 
 let externalWithAttribute = (originalName, types, safeIds, attr) => {
   let newName = OrigToSafeMap.find(originalName, safeIds);
-  let (outputAttrs, descFromStatement) =
+  let (outputAttrs, valueDescription) =
     switch (attr) {
-    | Module => ([("mel.module", None)], None)
-    | Send => ([("mel.send", None)], None)
-    | Get => ([("mel.get", None)], None)
-    | ObjectCreation => ([("mel.obj", None)], None)
-    | Val => ([], None)
-    | NewAttr => ([("mel.new", None)], None)
-    | ModuleAndNew => ([("mel.new", None), ("mel.module", None)], None)
+    | Module => ([("mel.module", None)], originalName)
+    | Send => ([("mel.send", None)], originalName)
+    | Get => ([("mel.get", None)], originalName)
+    | ObjectCreation => ([("mel.obj", None)], "")
+    | Val => ([], originalName)
+    | NewAttr => ([("mel.new", None)], originalName)
+    | ModuleAndNew => (
+        [("mel.new", None), ("mel.module", None)],
+        originalName,
+      )
     | ScopedModule(name, scopeProperty) => (
         [("mel.module", Some(name))],
-        Some(scopeProperty),
+        scopeProperty,
       )
-    };
-  let valueDescription =
-    switch (descFromStatement, newName == originalName) {
-    | (Some(desc), _) => desc
-    | (None, false) => originalName
-    | (None, true) => ""
     };
   let attrs: Ppxlib.attributes =
     outputAttrs
