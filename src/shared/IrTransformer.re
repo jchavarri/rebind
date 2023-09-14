@@ -241,7 +241,7 @@ let transform = state => {
     |> List.map(outputType =>
          Builder.pstr_type(
            ~loc=Location.none,
-           Nonrecursive,
+           Recursive,
            [
              Builder.type_declaration(
                ~loc=Location.none,
