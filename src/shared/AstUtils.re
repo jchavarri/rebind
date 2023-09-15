@@ -1,4 +1,6 @@
-open Ppxlib;
+open Asttypes;
+
+open Longident;
 
 let stripChars = (charsToStrip, s) => {
   let len = String.length(s);

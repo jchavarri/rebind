@@ -8,10 +8,11 @@ homepage: "https://github.com/jchavarri/rebind"
 bug-reports: "https://github.com/jchavarri/rebind/issues"
 depends: [
   "ocaml"
-  "reason" {>= "3.10.0"}
   "dune" {>= "3.9"}
-  "melange" {>= "1.0.0"}
-  "ppxlib"
+  "reason" {>= "3.10.0"}
+  "js_of_ocaml"
+  "ocamlformat"
+  "melange" {>= "1.0.0" & with-test}
   "ocaml-lsp-server" {with-test} # todo: use with-dev-setup once 2.2 is out
   "dot-merlin-reader" {with-test}
   "odoc" {with-doc}

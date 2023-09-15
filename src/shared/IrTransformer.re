@@ -1,8 +1,6 @@
-open Ppxlib;
-
 open Ast_helper;
 
-module Builder = Ast_builder.Default;
+open Parsetree;
 
 open SharedTypes;
 
@@ -148,7 +146,7 @@ let externalWithAttribute = (originalName, types, safeIds, attr) => {
         scopeProperty,
       )
     };
-  let attrs: Ppxlib.attributes =
+  let attrs: Parsetree.attributes =
     outputAttrs
     |> List.map(((outputAttr, constant)) => {
          let constExpr: list(Parsetree.structure_item) =
@@ -192,7 +190,7 @@ let externalWithAttribute = (originalName, types, safeIds, attr) => {
     pval_type: typeFromExternalTypes(types, safeIds),
     pval_attributes: attrs,
   };
-  Builder.pstr_primitive(~loc=Location.none, t);
+  Str.primitive(~loc=Location.none, t);
 };
 
 let rec generateSafeId = (~postFix=None, name, safeToOrig) => {
@@ -236,21 +234,18 @@ let transform = state => {
   (
     List.rev(outputTypes)
     |> List.map(outputType =>
-         Builder.pstr_type(
+         Str.type_(
            ~loc=Location.none,
            Recursive,
            [
-             Builder.type_declaration(
+             Type.mk(
                ~loc=Location.none,
-               ~name={
-                 txt: OrigToSafeMap.find(outputType, safeIds),
-                 loc: Location.none,
-               },
-               ~params=[],
-               ~cstrs=[],
-               ~private_=Public,
-               ~manifest=None,
                ~kind=Ptype_abstract,
+               ~priv=Public,
+               {
+                 loc: default_loc.contents,
+                 txt: OrigToSafeMap.find(outputType, safeIds),
+               },
              ),
            ],
          )

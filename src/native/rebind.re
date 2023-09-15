@@ -36,8 +36,24 @@ let processContent = () => {
       let content = cat(file);
       (file, content);
     };
-  let result = Shared.getBindings(file, content);
-  print_endline(Astlib.Pprintast.string_of_structure(result));
+  let result =
+    Pprintast.string_of_structure(Shared.getBindings(Some(file), content));
+  let formatted = {
+    Ocamlformat_lib.(
+      switch (
+        Translation_unit.parse_and_format(
+          Syntax.Use_file,
+          Conf.default,
+          ~input_name="_none_",
+          ~source=result,
+        )
+      ) {
+      | Ok(formatted) => formatted
+      | Error(_e) => failwith("ocamlformat error")
+      }
+    );
+  };
+  print_endline(formatted);
 };
 
 /* Ocaml  */

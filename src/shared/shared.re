@@ -37,7 +37,7 @@ let getBindings = (file, content) => {
       ~fail=true,
       ~parse_options,
       content,
-      Some(Loc.SourceFile(file)),
+      Option.map(f => Loc.SourceFile(f), file),
     );
   let (_, statements, _) = ast;
   getOutput(statements);

@@ -1,5 +1,4 @@
 (library
  (name shared)
- (modes :standard melange)
  (flags :standard -w -9)
- (libraries flow ppxlib))
+ (libraries flow compiler-libs))
