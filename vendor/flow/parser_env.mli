@@ -14,42 +14,38 @@
 module SSet : Set.S with type t = Set.Make(String).t
 
 module Lex_mode : sig
-  type t =
-    | NORMAL
-    | TYPE
-    | JSX_TAG
-    | JSX_CHILD
-    | TEMPLATE
-    | REGEXP
-  val debug_string_of_lex_mode: t -> string
+  type t = NORMAL | TYPE | JSX_TAG | JSX_CHILD | TEMPLATE | REGEXP
+
+  val debug_string_of_lex_mode : t -> string
 end
 
 type token_sink_result = {
-  token_loc: Loc.t;
-  token: Lexer_flow.Token.t;
-  token_context: Lex_mode.t;
-  token_value: string;
+  token_loc : Loc.t;
+  token : Lexer_flow.Token.t;
+  token_context : Lex_mode.t;
+  token_value : string;
 }
 
 type parse_options = {
-  esproposal_class_instance_fields: bool;
-  esproposal_class_static_fields: bool;
-  esproposal_decorators: bool;
-  esproposal_export_star_as: bool;
-  types: bool;
-  use_strict: bool;
+  esproposal_class_instance_fields : bool;
+  esproposal_class_static_fields : bool;
+  esproposal_decorators : bool;
+  esproposal_export_star_as : bool;
+  types : bool;
+  use_strict : bool;
 }
+
 val default_parse_options : parse_options
 
 type env
 
 (* constructor: *)
 val init_env :
-  ?token_sink:(token_sink_result -> unit) option
-  -> ?parse_options:parse_options option
-  -> Loc.filename option
-  -> string
-  -> env
+  ?token_sink:(token_sink_result -> unit) option ->
+  ?parse_options:parse_options option ->
+  Loc.filename option ->
+  string ->
+  env
 
 (* getters: *)
 val in_strict_mode : env -> bool
@@ -61,7 +57,7 @@ val in_loop : env -> bool
 val in_switch : env -> bool
 val in_function : env -> bool
 val allow_yield : env -> bool
-val allow_await: env -> bool
+val allow_await : env -> bool
 val no_in : env -> bool
 val no_call : env -> bool
 val no_let : env -> bool
@@ -82,7 +78,7 @@ val strict_error_at : env -> Loc.t * Parse_error.t -> unit
 val get_unexpected_error : Lexer_flow.Token.t * string -> Parse_error.t
 val comment_list : env -> Spider_monkey_ast.Comment.t list -> unit
 val error_list : env -> (Loc.t * Parse_error.t) list -> unit
-val record_export: env -> Loc.t * string -> unit
+val record_export : env -> Loc.t * string -> unit
 
 (* functional operations -- these return shallow copies, so future mutations to
  * the returned env will also affect the original: *)
@@ -99,12 +95,9 @@ val with_in_switch : bool -> env -> env
 val with_in_export : bool -> env -> env
 val with_no_call : bool -> env -> env
 val with_error_callback : (env -> Parse_error.t -> unit) -> env -> env
-
 val without_error_callback : env -> env
-
 val add_label : env -> string -> env
 val enter_function : env -> async:bool -> generator:bool -> env
-
 val is_future_reserved : string -> bool
 val is_strict_reserved : string -> bool
 val is_restricted : string -> bool
@@ -139,11 +132,9 @@ module Expect : sig
 end
 
 module Try : sig
-  type 'a parse_result =
-    | ParsedSuccessfully of 'a
-    | FailedToParse
+  type 'a parse_result = ParsedSuccessfully of 'a | FailedToParse
 
   exception Rollback
 
-  val to_parse: env -> (env -> 'a) -> 'a parse_result
+  val to_parse : env -> (env -> 'a) -> 'a parse_result
 end

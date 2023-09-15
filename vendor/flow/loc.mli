@@ -8,14 +8,17 @@
  *
  *)
 
-type position = { line : int; column : int; offset : int; }
+type position = { line : int; column : int; offset : int }
+
 type filename =
-    LibFile of string
+  | LibFile of string
   | SourceFile of string
   | JsonFile of string
   | ResourceFile of string
   | Builtins
-type t = { source : filename option; start : position; _end : position; }
+
+type t = { source : filename option; start : position; _end : position }
+
 val none : t
 val from_lb : filename option -> Lexing.lexbuf -> t
 val from_curr_lb : filename option -> Lexing.lexbuf -> t
@@ -32,9 +35,10 @@ val source_is_lib_file : filename -> bool
 val check_suffix : filename -> string -> bool
 val chop_suffix : filename -> string -> filename
 val with_suffix : filename -> string -> filename
-module FilenameKey :
-  sig
-    type t = filename
-    val to_string : filename -> string
-    val compare : 'a -> 'a -> int
-  end
+
+module FilenameKey : sig
+  type t = filename
+
+  val to_string : filename -> string
+  val compare : 'a -> 'a -> int
+end

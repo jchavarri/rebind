@@ -15,133 +15,122 @@
 
 module rec Identifier : sig
   type t = Loc.t * string
-end = Identifier
+end =
+  Identifier
 
 and Literal : sig
   module RegExp : sig
-    type t = {
-      pattern: string;
-      flags: string;
-    }
+    type t = { pattern : string; flags : string }
   end
 
   (* Literals also carry along their raw value *)
-  type t = {
-    value: value;
-    raw: string;
-  }
+  type t = { value : value; raw : string }
+
   and value =
     | String of string
     | Boolean of bool
     | Null
     | Number of float
     | RegExp of RegExp.t
-end = Literal
+end =
+  Literal
 
 and Variance : sig
   type t = Loc.t * t'
   and t' = Plus | Minus
-end = Variance
+end =
+  Variance
 
 and Type : sig
   module Function : sig
     module Param : sig
       type t = Loc.t * t'
+
       and t' = {
-        name: Identifier.t option;
-        typeAnnotation: Type.t;
-        optional: bool;
+        name : Identifier.t option;
+        typeAnnotation : Type.t;
+        optional : bool;
       }
     end
+
     module RestParam : sig
       type t = Loc.t * t'
-      and t' = {
-        argument: Param.t
-      }
+      and t' = { argument : Param.t }
     end
+
     type t = {
-      params: Param.t list * RestParam.t option;
-      returnType: Type.t;
-      typeParameters: Type.ParameterDeclaration.t option;
+      params : Param.t list * RestParam.t option;
+      returnType : Type.t;
+      typeParameters : Type.ParameterDeclaration.t option;
     }
   end
 
   module Object : sig
     module Property : sig
       type t' = {
-        key: Expression.Object.Property.key;
-        value: Type.t;
-        optional: bool;
-        static: bool;
-        _method: bool;
-        variance: Variance.t option;
+        key : Expression.Object.Property.key;
+        value : Type.t;
+        optional : bool;
+        static : bool;
+        _method : bool;
+        variance : Variance.t option;
       }
+
       type t = Loc.t * t'
     end
-    module Indexer: sig
+
+    module Indexer : sig
       type t' = {
-        id: Identifier.t option;
-        key: Type.t;
-        value: Type.t;
-        static: bool;
-        variance: Variance.t option;
+        id : Identifier.t option;
+        key : Type.t;
+        value : Type.t;
+        static : bool;
+        variance : Variance.t option;
       }
+
       and t = Loc.t * t'
     end
-    module CallProperty: sig
+
+    module CallProperty : sig
       type t = Loc.t * t'
-      and t' = {
-        value: Loc.t * Function.t;
-        static: bool;
-      }
+      and t' = { value : Loc.t * Function.t; static : bool }
     end
+
     type t = {
-      exact: bool;
-      properties: Property.t list;
-      indexers: Indexer.t list;
-      callProperties: CallProperty.t list;
+      exact : bool;
+      properties : Property.t list;
+      indexers : Indexer.t list;
+      callProperties : CallProperty.t list;
     }
   end
 
   module Generic : sig
     module Identifier : sig
-      type t =
-      | Unqualified of Identifier.t
-      | Qualified of qualified
+      type t = Unqualified of Identifier.t | Qualified of qualified
       and qualified = Loc.t * qualified'
-      and qualified' = {
-        qualification: t;
-        id: Identifier.t
-      }
+      and qualified' = { qualification : t; id : Identifier.t }
     end
+
     type t = {
-      id: Identifier.t;
-      typeParameters: Type.ParameterInstantiation.t option;
+      id : Identifier.t;
+      typeParameters : Type.ParameterInstantiation.t option;
     }
   end
 
   module StringLiteral : sig
-    type t = {
-      value: string;
-      raw: string;
-    }
+    type t = { value : string; raw : string }
   end
 
   module NumberLiteral : sig
-    type t = {
-      value: float;
-      raw: string;
-    }
+    type t = { value : float; raw : string }
   end
 
   module BooleanLiteral : sig
-    type t = {
-      value: bool;
-      raw: string;
-    }
+    type t = { value : bool; raw : string }
   end
 
   type t = Loc.t * t'
+
   (* Yes, we could add a little complexity here to show that Any and Void
    * should never be declared nullable, but that check can happen later *)
   and t' =
@@ -176,239 +165,206 @@ and Type : sig
   module ParameterDeclaration : sig
     module TypeParam : sig
       type t = Loc.t * t'
+
       and t' = {
-        name: string;
-        bound: Type.annotation option;
-        variance: Variance.t option;
-        default: Type.t option;
+        name : string;
+        bound : Type.annotation option;
+        variance : Variance.t option;
+        default : Type.t option;
       }
     end
+
     type t = Loc.t * t'
-    and t' = {
-      params: TypeParam.t list;
-    }
+    and t' = { params : TypeParam.t list }
   end
+
   module ParameterInstantiation : sig
     type t = Loc.t * t'
-    and t' = {
-      params: Type.t list;
-    }
+    and t' = { params : Type.t list }
   end
 
   module Predicate : sig
     type t = Loc.t * t'
-    and t' =
-      | Declared of Expression.t
-      | Inferred
+    and t' = Declared of Expression.t | Inferred
   end
-
-end = Type
+end =
+  Type
 
 and Statement : sig
   module Block : sig
-    type t = {
-      body: Statement.t list
-    }
+    type t = { body : Statement.t list }
   end
+
   module If : sig
     type t = {
-      test: Expression.t;
-      consequent: Statement.t;
-      alternate: Statement.t option;
+      test : Expression.t;
+      consequent : Statement.t;
+      alternate : Statement.t option;
     }
   end
+
   module Labeled : sig
-    type t = {
-      label: Identifier.t;
-      body: Statement.t;
-    }
+    type t = { label : Identifier.t; body : Statement.t }
   end
+
   module Break : sig
-    type t = {
-      label: Identifier.t option;
-    }
+    type t = { label : Identifier.t option }
   end
+
   module Continue : sig
-    type t = {
-      label: Identifier.t option;
-    }
+    type t = { label : Identifier.t option }
   end
+
   module With : sig
-    type t = {
-      _object: Expression.t;
-      body: Statement.t;
-    }
+    type t = { _object : Expression.t; body : Statement.t }
   end
+
   module TypeAlias : sig
     type t = {
-      id: Identifier.t;
-      typeParameters: Type.ParameterDeclaration.t option;
-      right: Type.t;
+      id : Identifier.t;
+      typeParameters : Type.ParameterDeclaration.t option;
+      right : Type.t;
     }
   end
+
   module Switch : sig
     module Case : sig
       type t = Loc.t * t'
-      and t' = {
-        test: Expression.t option;
-        consequent: Statement.t list;
-      }
+      and t' = { test : Expression.t option; consequent : Statement.t list }
     end
-    type t = {
-      discriminant: Expression.t;
-      cases: Case.t list;
-    }
+
+    type t = { discriminant : Expression.t; cases : Case.t list }
   end
+
   module Return : sig
-    type t = {
-      argument: Expression.t option;
-    }
+    type t = { argument : Expression.t option }
   end
+
   module Throw : sig
-    type t = {
-      argument: Expression.t;
-    }
+    type t = { argument : Expression.t }
   end
+
   module Try : sig
     module CatchClause : sig
       type t = Loc.t * t'
-      and t' = {
-        param: Pattern.t;
-        body: Loc.t * Block.t;
-      }
+      and t' = { param : Pattern.t; body : Loc.t * Block.t }
     end
+
     type t = {
-      block: Loc.t * Block.t;
-      handler: CatchClause.t option;
-      finalizer: (Loc.t * Block.t) option;
+      block : Loc.t * Block.t;
+      handler : CatchClause.t option;
+      finalizer : (Loc.t * Block.t) option;
     }
   end
+
   module VariableDeclaration : sig
     module Declarator : sig
       type t = Loc.t * t'
-      and t' = {
-        id: Pattern.t;
-        init: Expression.t option;
-      }
+      and t' = { id : Pattern.t; init : Expression.t option }
     end
-    type kind =
-      | Var
-      | Let
-      | Const
-    type t = {
-      declarations: Declarator.t list;
-      kind: kind;
-    }
+
+    type kind = Var | Let | Const
+    type t = { declarations : Declarator.t list; kind : kind }
   end
+
   module While : sig
-    type t = {
-      test: Expression.t;
-      body: Statement.t;
-    }
+    type t = { test : Expression.t; body : Statement.t }
   end
+
   module DoWhile : sig
-    type t = {
-      body: Statement.t;
-      test: Expression.t;
-    }
+    type t = { body : Statement.t; test : Expression.t }
   end
+
   module For : sig
     type init =
       | InitDeclaration of (Loc.t * VariableDeclaration.t)
       | InitExpression of Expression.t
+
     type t = {
-      init: init option;
-      test: Expression.t option;
-      update: Expression.t option;
-      body: Statement.t;
+      init : init option;
+      test : Expression.t option;
+      update : Expression.t option;
+      body : Statement.t;
     }
   end
+
   module ForIn : sig
     type left =
       | LeftDeclaration of (Loc.t * VariableDeclaration.t)
       | LeftExpression of Expression.t
+
     type t = {
-      left: left;
-      right: Expression.t;
-      body: Statement.t;
-      each: bool;
+      left : left;
+      right : Expression.t;
+      body : Statement.t;
+      each : bool;
     }
   end
+
   module ForOf : sig
     type left =
       | LeftDeclaration of (Loc.t * VariableDeclaration.t)
       | LeftExpression of Expression.t
+
     type t = {
-      left: left;
-      right: Expression.t;
-      body: Statement.t;
-      async: bool;
+      left : left;
+      right : Expression.t;
+      body : Statement.t;
+      async : bool;
     }
   end
+
   module Interface : sig
     type t = {
-      id: Identifier.t;
-      typeParameters: Type.ParameterDeclaration.t option;
-      body: Loc.t * Type.Object.t;
-      extends: (Loc.t * Type.Generic.t) list;
-      mixins: (Loc.t * Type.Generic.t) list;
+      id : Identifier.t;
+      typeParameters : Type.ParameterDeclaration.t option;
+      body : Loc.t * Type.Object.t;
+      extends : (Loc.t * Type.Generic.t) list;
+      mixins : (Loc.t * Type.Generic.t) list;
     }
   end
+
   module DeclareVariable : sig
-    type t = {
-      id: Identifier.t;
-      typeAnnotation: Type.annotation option;
-    }
+    type t = { id : Identifier.t; typeAnnotation : Type.annotation option }
   end
+
   module DeclareFunction : sig
     type t = {
-      id: Identifier.t;
-      typeAnnotation: Type.annotation;
-      predicate: Type.Predicate.t option;
+      id : Identifier.t;
+      typeAnnotation : Type.annotation;
+      predicate : Type.Predicate.t option;
     }
   end
+
   module DeclareModule : sig
-    type id =
-      | Identifier of Identifier.t
-      | Literal of (Loc.t * Literal.t)
-
-    type module_kind =
-      | CommonJS of Loc.t
-      | ES of Loc.t
-
-    type t = {
-      id: id;
-      body: Loc.t * Block.t;
-      kind: module_kind;
-    }
+    type id = Identifier of Identifier.t | Literal of (Loc.t * Literal.t)
+    type module_kind = CommonJS of Loc.t | ES of Loc.t
+    type t = { id : id; body : Loc.t * Block.t; kind : module_kind }
   end
+
   module ExportNamedDeclaration : sig
     module ExportSpecifier : sig
       type t = Loc.t * t'
-      and t' = {
-        local: Identifier.t;
-        exported: Identifier.t option;
-      }
+      and t' = { local : Identifier.t; exported : Identifier.t option }
     end
+
     type specifier =
       | ExportSpecifiers of ExportSpecifier.t list
       | ExportBatchSpecifier of Loc.t * Identifier.t option
+
     type t = {
-      declaration: Statement.t option;
-      specifiers: specifier option;
-      source: (Loc.t * Literal.t) option; (* This will always be a string *)
-      exportKind: Statement.exportKind;
+      declaration : Statement.t option;
+      specifiers : specifier option;
+      source : (Loc.t * Literal.t) option; (* This will always be a string *)
+      exportKind : Statement.exportKind;
     }
   end
+
   module ExportDefaultDeclaration : sig
-    type declaration =
-      | Declaration of Statement.t
-      | Expression of Expression.t
-    type t = {
-      declaration: declaration;
-      exportKind: Statement.exportKind;
-    }
+    type declaration = Declaration of Statement.t | Expression of Expression.t
+    type t = { declaration : declaration; exportKind : Statement.exportKind }
   end
+
   module DeclareExportDeclaration : sig
     type declaration =
       (* declare export var *)
@@ -427,49 +383,46 @@ and Statement : sig
       | Interface of (Loc.t * Interface.t)
 
     type t = {
-      default: bool;
-      declaration: declaration option;
-      specifiers: ExportNamedDeclaration.specifier option;
-      source: (Loc.t * Literal.t) option; (* This will always be a string *)
+      default : bool;
+      declaration : declaration option;
+      specifiers : ExportNamedDeclaration.specifier option;
+      source : (Loc.t * Literal.t) option; (* This will always be a string *)
     }
   end
+
   module ImportDeclaration : sig
     module NamedSpecifier : sig
       type t = Loc.t * t'
-      and t' = {
-        id: Identifier.t;
-        name: Identifier.t option;
-      }
+      and t' = { id : Identifier.t; name : Identifier.t option }
     end
+
     type named_specifier = {
-      local: Identifier.t option;
-      remote: Identifier.t;
+      local : Identifier.t option;
+      remote : Identifier.t;
     }
+
     type specifier =
       | ImportNamedSpecifier of named_specifier
       | ImportDefaultSpecifier of Identifier.t
       | ImportNamespaceSpecifier of (Loc.t * Identifier.t)
-    type importKind =
-      | ImportType
-      | ImportTypeof
-      | ImportValue
+
+    type importKind = ImportType | ImportTypeof | ImportValue
+
     type t = {
-      importKind: importKind;
-      source: (Loc.t * Literal.t); (* Always a string literal *)
-      specifiers: specifier list;
-    }
-  end
-  module Expression : sig
-    type t = {
-      expression: Expression.t;
+      importKind : importKind;
+      source : Loc.t * Literal.t; (* Always a string literal *)
+      specifiers : specifier list;
     }
   end
 
-  type exportKind =
-    | ExportType
-    | ExportValue
+  module Expression : sig
+    type t = { expression : Expression.t }
+  end
+
+  type exportKind = ExportType | ExportValue
 
   type t = Loc.t * t'
+
   and t' =
     | Empty
     | Block of Block.t
@@ -503,88 +456,78 @@ and Statement : sig
     | ExportNamedDeclaration of ExportNamedDeclaration.t
     | ExportDefaultDeclaration of ExportDefaultDeclaration.t
     | ImportDeclaration of ImportDeclaration.t
-end = Statement
+end =
+  Statement
 
 and Expression : sig
   module SpreadElement : sig
     type t = Loc.t * t'
-    and t' = {
-      argument: Expression.t;
-    }
+    and t' = { argument : Expression.t }
   end
+
   type expression_or_spread =
     | Expression of Expression.t
     | Spread of SpreadElement.t
 
   module Array : sig
-    type t = {
-      elements: expression_or_spread option list;
-    }
+    type t = { elements : expression_or_spread option list }
   end
+
   module TemplateLiteral : sig
     module Element : sig
-      type value = {
-        raw: string;
-        cooked: string;
-      }
+      type value = { raw : string; cooked : string }
+
       type t = Loc.t * t'
-      and t' = {
-        value: value;
-        tail: bool;
-      }
+      and t' = { value : value; tail : bool }
     end
-    type t = {
-      quasis: Element.t list;
-      expressions: Expression.t list;
-    }
+
+    type t = { quasis : Element.t list; expressions : Expression.t list }
   end
+
   module TaggedTemplate : sig
-    type t = {
-      tag: Expression.t;
-      quasi: Loc.t * TemplateLiteral.t;
-    }
+    type t = { tag : Expression.t; quasi : Loc.t * TemplateLiteral.t }
   end
+
   module Object : sig
     (* This is a slight deviation from the Mozilla spec. In the spec, an object
-      * property is not a proper node, and lacks a location and a "type" field.
-      * Esprima promotes it to a proper node and that is useful, so I'm
-      * following their example *)
+       * property is not a proper node, and lacks a location and a "type" field.
+       * Esprima promotes it to a proper node and that is useful, so I'm
+       * following their example *)
     module Property : sig
       type key =
         | Literal of (Loc.t * Literal.t)
         | Identifier of Identifier.t
         | Computed of Expression.t
-      type kind =
-        | Init
-        | Get
-        | Set
+
+      type kind = Init | Get | Set
+
       type t = Loc.t * t'
+
       and t' = {
-        key: key;
-        value: Expression.t;
-        kind: kind;
-        _method: bool;
-        shorthand: bool;
+        key : key;
+        value : Expression.t;
+        kind : kind;
+        _method : bool;
+        shorthand : bool;
       }
     end
+
     module SpreadProperty : sig
       type t = Loc.t * t'
-      and t' = {
-        argument: Expression.t;
-      }
+      and t' = { argument : Expression.t }
     end
+
     type property =
       | Property of Property.t
       | SpreadProperty of SpreadProperty.t
-    type t = {
-      properties: property list;
-    }
+
+    type t = { properties : property list }
   end
+
   module Sequence : sig
-    type t = {
-      expressions: Expression.t list;
-    }
+    type t = { expressions : Expression.t list }
   end
+
   module Unary : sig
     type operator =
       | Minus
@@ -595,12 +538,10 @@ and Expression : sig
       | Void
       | Delete
       | Await
-    type t = {
-      operator: operator;
-      prefix: bool;
-      argument: Expression.t
-    }
+
+    type t = { operator : operator; prefix : bool; argument : Expression.t }
   end
+
   module Binary : sig
     type operator =
       | Equal
@@ -625,12 +566,10 @@ and Expression : sig
       | BitAnd
       | In
       | Instanceof
-    type t = {
-      operator: operator;
-      left: Expression.t;
-      right: Expression.t;
-    }
+
+    type t = { operator : operator; left : Expression.t; right : Expression.t }
   end
+
   module Assignment : sig
     type operator =
       | Assign
@@ -646,101 +585,74 @@ and Expression : sig
       | BitOrAssign
       | BitXorAssign
       | BitAndAssign
-    type t = {
-      operator: operator;
-      left: Pattern.t;
-      right: Expression.t;
-    }
+
+    type t = { operator : operator; left : Pattern.t; right : Expression.t }
   end
+
   module Update : sig
-    type operator =
-      | Increment
-      | Decrement
-    type t = {
-      operator: operator;
-      argument: Expression.t;
-      prefix: bool;
-    }
+    type operator = Increment | Decrement
+    type t = { operator : operator; argument : Expression.t; prefix : bool }
   end
+
   module Logical : sig
-    type operator =
-      | Or
-      | And
-    type t = {
-      operator: operator;
-      left: Expression.t;
-      right: Expression.t;
-    }
+    type operator = Or | And
+    type t = { operator : operator; left : Expression.t; right : Expression.t }
   end
+
   module Conditional : sig
     type t = {
-      test: Expression.t;
-      consequent: Expression.t;
-      alternate: Expression.t;
+      test : Expression.t;
+      consequent : Expression.t;
+      alternate : Expression.t;
     }
   end
+
   module New : sig
-    type t = {
-      callee: Expression.t;
-      arguments: expression_or_spread list;
-    }
+    type t = { callee : Expression.t; arguments : expression_or_spread list }
   end
+
   module Call : sig
-    type t = {
-      callee: Expression.t;
-      arguments: expression_or_spread list;
-    }
+    type t = { callee : Expression.t; arguments : expression_or_spread list }
   end
+
   module Member : sig
     type property =
       | PropertyIdentifier of Identifier.t
       | PropertyExpression of Expression.t
-    type t = {
-      _object: Expression.t;
-      property: property;
-      computed: bool;
-    }
+
+    type t = { _object : Expression.t; property : property; computed : bool }
   end
+
   module Yield : sig
-    type t = {
-      argument: Expression.t option;
-      delegate: bool;
-    }
+    type t = { argument : Expression.t option; delegate : bool }
   end
+
   module Comprehension : sig
     module Block : sig
       type t = Loc.t * t'
-      and t' = {
-        left: Pattern.t;
-        right: Expression.t;
-        each: bool;
-      }
+      and t' = { left : Pattern.t; right : Expression.t; each : bool }
     end
-    type t = {
-      blocks: Block.t list;
-      filter: Expression.t option;
-    }
+
+    type t = { blocks : Block.t list; filter : Expression.t option }
   end
+
   module Generator : sig
     type t = {
-      blocks: Comprehension.Block.t list;
-      filter: Expression.t option;
-    }
-  end
-  module TypeCast : sig
-    type t = {
-      expression: Expression.t;
-      typeAnnotation: Type.annotation;
-    }
-  end
-  module MetaProperty : sig
-    type t = {
-      meta: Identifier.t;
-      property: Identifier.t;
+      blocks : Comprehension.Block.t list;
+      filter : Expression.t option;
     }
   end
 
+  module TypeCast : sig
+    type t = { expression : Expression.t; typeAnnotation : Type.annotation }
+  end
+
+  module MetaProperty : sig
+    type t = { meta : Identifier.t; property : Identifier.t }
+  end
+
   type t = Loc.t * t'
+
   and t' =
     | This
     | Super
@@ -769,70 +681,49 @@ and Expression : sig
     | Class of Class.t
     | TypeCast of TypeCast.t
     | MetaProperty of MetaProperty.t
-end = Expression
+end =
+  Expression
 
 and JSX : sig
   module Identifier : sig
     type t = Loc.t * t'
-    and t' = {
-      name: string;
-    }
+    and t' = { name : string }
   end
 
   module NamespacedName : sig
     type t = Loc.t * t'
-    and t' = {
-      namespace: Identifier.t;
-      name: Identifier.t;
-    }
+    and t' = { namespace : Identifier.t; name : Identifier.t }
   end
 
   module ExpressionContainer : sig
-    type t = {
-      expression: expression;
-    }
-    and expression =
-    | Expression of Expression.t
-    | EmptyExpression of Loc.t
+    type t = { expression : expression }
+    and expression = Expression of Expression.t | EmptyExpression of Loc.t
   end
 
   module Text : sig
-    type t = {
-      value: string;
-      raw: string;
-    }
+    type t = { value : string; raw : string }
   end
 
   module Attribute : sig
     type t = Loc.t * t'
-    and name =
-    | Identifier of Identifier.t
-    | NamespacedName of NamespacedName.t
+    and name = Identifier of Identifier.t | NamespacedName of NamespacedName.t
+
     and value =
-    | Literal of Loc.t * Literal.t
-    | ExpressionContainer of Loc.t * ExpressionContainer.t
-    and t' = {
-      name: name;
-      value: value option;
-    }
+      | Literal of Loc.t * Literal.t
+      | ExpressionContainer of Loc.t * ExpressionContainer.t
+
+    and t' = { name : name; value : value option }
   end
 
   module SpreadAttribute : sig
     type t = Loc.t * t'
-    and t' = {
-      argument: Expression.t;
-    }
+    and t' = { argument : Expression.t }
   end
 
   module MemberExpression : sig
     type t = Loc.t * t'
-    and _object =
-    | Identifier of Identifier.t
-    | MemberExpression of t
-    and t' = {
-      _object: _object;
-      property: Identifier.t;
-    }
+    and _object = Identifier of Identifier.t | MemberExpression of t
+    and t' = { _object : _object; property : Identifier.t }
   end
 
   type name =
@@ -847,32 +738,28 @@ and JSX : sig
       | Attribute of Attribute.t
       | SpreadAttribute of SpreadAttribute.t
 
-    and t' = {
-      name: name;
-      selfClosing: bool;
-      attributes: attribute list;
-    }
+    and t' = { name : name; selfClosing : bool; attributes : attribute list }
   end
 
   module Closing : sig
     type t = Loc.t * t'
-    and t' = {
-      name: name;
-    }
+    and t' = { name : name }
   end
 
   type child = Loc.t * child'
+
   and child' =
     | Element of element
     | ExpressionContainer of ExpressionContainer.t
     | Text of Text.t
 
   and element = {
-    openingElement: Opening.t;
-    closingElement: Closing.t option;
-    children: child list
+    openingElement : Opening.t;
+    closingElement : Closing.t option;
+    children : child list;
   }
-end = JSX
+end =
+  JSX
 
 and Pattern : sig
   module Object : sig
@@ -881,145 +768,143 @@ and Pattern : sig
         | Literal of (Loc.t * Literal.t)
         | Identifier of Identifier.t
         | Computed of Expression.t
+
       type t = Loc.t * t'
-      and t' = {
-        key: key;
-        pattern: Pattern.t;
-        shorthand: bool;
-      }
+      and t' = { key : key; pattern : Pattern.t; shorthand : bool }
     end
+
     module RestProperty : sig
       type t = Loc.t * t'
-      and t' = {
-        argument: Pattern.t;
-      }
+      and t' = { argument : Pattern.t }
     end
-    type property =
-      | Property of Property.t
-      | RestProperty of RestProperty.t
+
+    type property = Property of Property.t | RestProperty of RestProperty.t
+
     type t = {
-      properties: property list;
-      typeAnnotation: Type.annotation option;
+      properties : property list;
+      typeAnnotation : Type.annotation option;
     }
   end
+
   module Array : sig
     module RestElement : sig
       type t = Loc.t * t'
-      and t' = {
-        argument: Pattern.t;
-      }
+      and t' = { argument : Pattern.t }
     end
-    type element =
-      | Element of Pattern.t
-      | RestElement of RestElement.t
+
+    type element = Element of Pattern.t | RestElement of RestElement.t
+
     type t = {
-      elements: element option list;
-      typeAnnotation: Type.annotation option;
+      elements : element option list;
+      typeAnnotation : Type.annotation option;
     }
   end
+
   module Assignment : sig
-    type t = {
-      left: Pattern.t;
-      right: Expression.t;
-    }
+    type t = { left : Pattern.t; right : Expression.t }
   end
+
   module Identifier : sig
     type t = {
-      name: Identifier.t;
-      typeAnnotation: Type.annotation option;
-      optional: bool;
+      name : Identifier.t;
+      typeAnnotation : Type.annotation option;
+      optional : bool;
     }
   end
+
   type t = Loc.t * t'
+
   and t' =
     | Object of Object.t
     | Array of Array.t
     | Assignment of Assignment.t
     | Identifier of Identifier.t
     | Expression of Expression.t
-end = Pattern
+end =
+  Pattern
 
 and Comment : sig
   type t = Loc.t * t'
-  and t' =
-    | Block of string
-    | Line of string
-end = Comment
+  and t' = Block of string | Line of string
+end =
+  Comment
 
 and Class : sig
   module Method : sig
     type t = Loc.t * t'
-    and kind =
-      | Constructor
-      | Method
-      | Get
-      | Set
+    and kind = Constructor | Method | Get | Set
+
     and t' = {
-      kind: kind;
-      key: Expression.Object.Property.key;
-      value: Loc.t * Function.t;
-      static: bool;
-      decorators: Expression.t list;
+      kind : kind;
+      key : Expression.Object.Property.key;
+      value : Loc.t * Function.t;
+      static : bool;
+      decorators : Expression.t list;
     }
   end
+
   module Property : sig
     type t = Loc.t * t'
+
     and t' = {
-      key: Expression.Object.Property.key;
-      value: Expression.t option;
-      typeAnnotation: Type.annotation option;
-      static: bool;
-      variance: Variance.t option;
+      key : Expression.Object.Property.key;
+      value : Expression.t option;
+      typeAnnotation : Type.annotation option;
+      static : bool;
+      variance : Variance.t option;
     }
   end
+
   module Implements : sig
     type t = Loc.t * t'
+
     and t' = {
-      id: Identifier.t;
-      typeParameters: Type.ParameterInstantiation.t option;
+      id : Identifier.t;
+      typeParameters : Type.ParameterInstantiation.t option;
     }
   end
+
   module Body : sig
-    type element =
-      | Method of Method.t
-      | Property of Property.t
+    type element = Method of Method.t | Property of Property.t
+
     type t = Loc.t * t'
-    and t' = {
-      body: element list;
-    }
+    and t' = { body : element list }
   end
+
   type t = {
-    id: Identifier.t option;
-    body: Class.Body.t;
-    superClass: Expression.t option;
-    typeParameters: Type.ParameterDeclaration.t option;
-    superTypeParameters: Type.ParameterInstantiation.t option;
-    implements: Class.Implements.t list;
-    classDecorators: Expression.t list;
+    id : Identifier.t option;
+    body : Class.Body.t;
+    superClass : Expression.t option;
+    typeParameters : Type.ParameterDeclaration.t option;
+    superTypeParameters : Type.ParameterInstantiation.t option;
+    implements : Class.Implements.t list;
+    classDecorators : Expression.t list;
   }
-end = Class
+end =
+  Class
 
 and Function : sig
   module RestElement : sig
     type t = Loc.t * t'
-    and t' = {
-      argument: Pattern.t;
-    }
+    and t' = { argument : Pattern.t }
   end
+
   type body =
     | BodyBlock of (Loc.t * Statement.Block.t)
     | BodyExpression of Expression.t
+
   type t = {
-    id: Identifier.t option;
-    params: Pattern.t list * RestElement.t option;
-    body: body;
-    async: bool;
-    generator: bool;
-    predicate: Type.Predicate.t option;
-    expression: bool;
-    returnType: Type.annotation option;
-    typeParameters: Type.ParameterDeclaration.t option;
+    id : Identifier.t option;
+    params : Pattern.t list * RestElement.t option;
+    body : body;
+    async : bool;
+    generator : bool;
+    predicate : Type.Predicate.t option;
+    expression : bool;
+    returnType : Type.annotation option;
+    typeParameters : Type.ParameterDeclaration.t option;
   }
-end = Function
+end =
+  Function
 
 type program = Loc.t * Statement.t list * Comment.t list
