@@ -421,7 +421,7 @@ Unexpected token error (no need to run melc)
   $ rebind input.js | tee output.ml
   Fatal error: exception Parse_error.Error(_)
   Raised at Parser_flow.do_parse in file "vendor/flow/parser_flow.ml", line 4550, characters 7-37
-  Called from Shared.get_bindings in file "src/shared/shared.ml", line 32, characters 4-114
+  Called from Shared.get_bindings in file "src/shared/shared.ml", line 35, characters 4-114
   Called from Dune__exe__Rebind.processContent in file "src/native/rebind.ml", line 32, characters 34-75
   Called from Dune__exe__Rebind in file "src/native/rebind.ml", line 48, characters 7-24
 

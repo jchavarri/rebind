@@ -1,0 +1,5 @@
+(executable
+ (name rebind_js)
+ (public_name rebind_js)
+ (modes byte js)
+ (libraries js_of_ocaml-compiler.runtime reason shared))

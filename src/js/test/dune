@@ -1,0 +1,2 @@
+(cram
+ (deps ../rebind_js.bc.js %{bin:rebind_js}))
