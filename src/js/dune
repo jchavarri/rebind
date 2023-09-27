@@ -3,3 +3,9 @@
  (public_name rebind_js)
  (modes byte js)
  (libraries js_of_ocaml-compiler.runtime reason shared))
+
+(install
+ (section bin)
+ (package rebind)
+ (files
+  (rebind_js.bc.js as rebind.js)))
