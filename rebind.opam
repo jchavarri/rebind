@@ -17,6 +17,20 @@ depends: [
   "dot-merlin-reader" {with-test}
   "odoc" {with-doc}
 ]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
 dev-repo: "git+https://github.com/jchavarri/rebind.git"
 pin-depends: [
   ["melange.dev"           "git+https://github.com/melange-re/melange.git#e114ad55d185badeb32b3c766c9ab547495eac1b"]
