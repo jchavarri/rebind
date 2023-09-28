@@ -10,7 +10,9 @@ let h (state : Shared_types.state) (_, statement) =
       in
       match (init, id) with
       | Some e, Identifier { name = _, name } ->
-          let state, lastType = Handle_expression.h state e in
+          let state, lastType =
+            Handle_expression.h { state with parentContextName = name } e
+          in
           {
             state with
             identifiers =

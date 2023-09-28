@@ -71,11 +71,7 @@ let rec handle_callable_expr exprType callee arguments state =
                let accState, lastType = h accState e in
                (accState, accTypes @ [ lastType ])
            | Spread (_, _) -> failwith "Call.argument.Spread")
-         ( {
-             state with
-             parentContextName = String.concat "" [ callee_name; "Param" ];
-           },
-           [] )
+         ({ state with parentContextName = callee_name ^ "Param" }, [])
   in
   match callee_exp with
   (* Maybe this shouldn't be nested here, and the recursion should continue... *)
@@ -177,7 +173,14 @@ and h state (_, expression) =
                in
                let propertyName =
                  match property.key with
-                 | Identifier (_loc, name) -> name
+                 | Identifier (_loc, name) -> (
+                     match name with
+                     | "" -> "_"
+                     | _ ->
+                         let first_char = name.[0] in
+                         if Char.uppercase_ascii first_char = first_char then
+                           "_" ^ name
+                         else name)
                  | Literal _ | Computed _ ->
                      failwith "Computed properties in objects are unsupported"
                in
