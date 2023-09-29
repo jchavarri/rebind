@@ -33,15 +33,7 @@ type state = {
   identifiers : external_base_type Identifiers.t;
   right_side_types : external_base_type list;
       (* The carried types in an expression *)
-  outputTypes : string list;
-  outputExternals : external_statement list;
-  parentContextName : string;
+  output_types : string list;
+  output_externals : external_statement list;
+  parent_context_name : string;
 }
-
-module type Statement = sig
-  val mapper : state -> ('M, 'T) Parser_flow.Ast.Statement.t -> state
-end
-
-module type T = sig
-  val mapper : state -> ('M, 'T) Parser_flow.Ast.Statement.t -> state
-end

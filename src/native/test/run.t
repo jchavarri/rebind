@@ -446,8 +446,8 @@ Unexpected token error (no need to run melc)
   Called from Shared__Handle_expression.h in file "src/shared/handle_expression.ml", line 171, characters 8-1023
   Called from Shared__Handle_expression.handle_callable_expr.(fun) in file "src/shared/handle_expression.ml", line 71, characters 40-52
   Called from Stdlib__List.fold_left in file "list.ml", line 123, characters 24-34
-  Called from Shared__Handle_expression.handle_callable_expr in file "src/shared/handle_expression.ml", line 66, characters 4-397
-  Called from Shared__Handle_plain_statement.h in file "src/shared/handle_plain_statement.ml", line 18, characters 12-73
+  Called from Shared__Handle_expression.handle_callable_expr in file "src/shared/handle_expression.ml", line 66, characters 4-399
+  Called from Shared__Handle_plain_statement.h in file "src/shared/handle_plain_statement.ml", line 18, characters 12-75
   Called from Stdlib__List.fold_left in file "list.ml", line 123, characters 24-34
   Called from Shared.get_output in file "src/shared/shared.ml", line 12, characters 2-131
   Called from Dune__exe__Rebind.processContent in file "src/native/rebind.ml", line 33, characters 6-69

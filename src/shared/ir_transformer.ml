@@ -187,15 +187,15 @@ let safe_identifiers identifiers =
 let transform state =
   let {
     identifiers;
-    outputTypes;
-    outputExternals;
+    output_types;
+    output_externals;
     right_side_types = _;
-    parentContextName = _;
+    parent_context_name = _;
   } =
     state
   in
   let safeIds = safe_identifiers identifiers in
-  (List.rev outputTypes
+  (List.rev output_types
   |> List.map (fun outputType ->
          Str.type_ ~loc:Location.none Recursive
            [
@@ -205,7 +205,7 @@ let transform state =
                  txt = OrigToSafeMap.find outputType safeIds;
                };
            ]))
-  @ (List.rev outputExternals
+  @ (List.rev output_externals
     |> List.map (fun structureItem ->
            external_with_attribute structureItem.name structureItem.types
              safeIds structureItem.attr))

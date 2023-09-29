@@ -2,10 +2,10 @@ let init_state =
   let open Shared_types in
   {
     right_side_types = [];
-    outputTypes = [];
-    outputExternals = [];
+    output_types = [];
+    output_externals = [];
     identifiers = Identifiers.empty;
-    parentContextName = "";
+    parent_context_name = "";
   }
 
 let get_output statements =

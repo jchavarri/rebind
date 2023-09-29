@@ -6,16 +6,16 @@ type callable_expr = CallExpr | NewExpr
 let get_state (state, _lastType) = state
 
 let maybe_add_identifier ?customType state name =
-  let lastType, outputTypes =
+  let lastType, output_types =
     match Utils.try_find_id name state.identifiers with
-    | Some existingType -> (existingType, state.outputTypes)
+    | Some existingType -> (existingType, state.output_types)
     | None ->
         ( Utils.get_with_default customType (Abstract name),
-          name :: state.outputTypes )
+          name :: state.output_types )
   in
   ( {
       state with
-      outputTypes;
+      output_types;
       identifiers = Identifiers.add name lastType state.identifiers;
     },
     lastType )
@@ -34,7 +34,7 @@ let maybe_add_external state externalAttr name inputTypes =
   in
   (* TODO: Try to match params with existing externals *)
   let existingExternal =
-    Utils.try_find_in_list (fun e -> e.name = name) state.outputExternals
+    Utils.try_find_in_list (fun e -> e.name = name) state.output_externals
   in
   match existingExternal with
   | Some _ -> (state, lastType)
@@ -44,7 +44,7 @@ let maybe_add_external state externalAttr name inputTypes =
       in
       ( {
           state with
-          outputExternals = external_statement :: state.outputExternals;
+          output_externals = external_statement :: state.output_externals;
         },
         lastType )
 
@@ -71,7 +71,7 @@ let rec handle_callable_expr exprType callee (_, arguments) state =
                let accState, lastType = h accState e in
                (accState, accTypes @ [ lastType ])
            | Spread _ -> failwith "Call.argument.Spread")
-         ({ state with parentContextName = callee_name ^ "Param" }, [])
+         ({ state with parent_context_name = callee_name ^ "Param" }, [])
   in
   match callee_exp with
   (* Maybe this shouldn't be nested here, and the recursion should continue... *)
@@ -166,7 +166,7 @@ and h state (_, expression) =
       | PropertyExpression _ -> failwith "Member.PropertyExpression"
       | PropertyPrivateName _ -> failwith "Member.PropertyPrivateName")
   | Object obj ->
-      let originalContextName = state.parentContextName in
+      let originalContextName = state.parent_context_name in
       let state, objTypes =
         obj.properties
         |> List.fold_left
@@ -194,7 +194,7 @@ and h state (_, expression) =
                in
                let propState, propType =
                  h
-                   { accState with parentContextName = propertyName }
+                   { accState with parent_context_name = propertyName }
                    propertyValue
                in
                let namedType = Named (propertyName, propType) in

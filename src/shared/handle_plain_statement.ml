@@ -15,7 +15,7 @@ let h (state : Shared_types.state)
           Identifier
             { name = _, { name; comments = _ }; annot = _; optional = _ } ) ->
           let state, lastType =
-            Handle_expression.h { state with parentContextName = name } e
+            Handle_expression.h { state with parent_context_name = name } e
           in
           {
             state with
