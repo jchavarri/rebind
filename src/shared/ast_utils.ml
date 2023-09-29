@@ -13,14 +13,6 @@ let strip_chars charsToStrip s =
   in
   Bytes.to_string (aux 0 0)
 
-let process_reserved_words name =
-  match name with
-  | "object" -> "object_"
-  | "type" -> "type_"
-  | "done" -> "done_"
-  | "then" -> "then_"
-  | n -> n
-
 let correct_labelled_arg name =
   let corrected_name =
     match name with
@@ -29,6 +21,14 @@ let correct_labelled_arg name =
         let first_char = name.[0] in
         if Char.uppercase_ascii first_char = first_char then "_" ^ name
         else name
+  in
+  let process_reserved_words name =
+    match name with
+    | "object" -> "_object"
+    | "type" -> "_type"
+    | "done" -> "_done"
+    | "then" -> "_then"
+    | n -> n
   in
   process_reserved_words corrected_name
 
@@ -58,6 +58,14 @@ let correct_identifier ident =
       | false -> correctedName
     in
     let correctedName = String.uncapitalize_ascii correctedName in
+    let process_reserved_words name =
+      match name with
+      | "object" -> "object_"
+      | "type" -> "type_"
+      | "done" -> "done_"
+      | "then" -> "then_"
+      | n -> n
+    in
     process_reserved_words correctedName
 
 let ast_helper_str_lident a =

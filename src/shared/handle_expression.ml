@@ -186,8 +186,8 @@ and h state (_, expression) =
                in
                let propertyName =
                  match propertyKey with
-                 | Identifier (_loc, { name; comments = _ }) -> (
-                     Ast_utils.correct_labelled_arg name)
+                 | Identifier (_loc, { name; comments = _ }) ->
+                     Ast_utils.correct_labelled_arg name
                  | Computed _ | StringLiteral _ | NumberLiteral _
                  | BigIntLiteral _ | PrivateName _ ->
                      failwith "Computed properties in objects are unsupported"
@@ -203,14 +203,17 @@ and h state (_, expression) =
       in
       maybe_add_external state ObjectCreation originalContextName
         (objTypes @ [ Unit ])
+  | MetaProperty { meta = _, meta; property = _, property; comments = _ } ->
+      let state, lastType = maybe_add_external state Val meta.name [] in
+      maybe_add_external state Get property.name [ lastType ]
   | StringLiteral { value; raw = _; comments = _ } ->
       Handle_literal.h state (String value)
   | NumberLiteral { value; raw = _; comments = _ } ->
       Handle_literal.h state (Number value)
   | Array _ | Sequence _ | Unary _ | Binary _ | Assignment _ | Update _
   | Logical _ | Conditional _ | Yield _ | TemplateLiteral _ | TaggedTemplate _
-  | JSXElement _ | Class _ | TypeCast _ | MetaProperty _ | Import _
-  | JSXFragment _ | BooleanLiteral _ | NullLiteral _ | BigIntLiteral _
-  | RegExpLiteral _ | ModuleRefLiteral _ | OptionalCall _ | OptionalMember _
-  | Super _ | This _ | TSTypeCast _ ->
+  | JSXElement _ | Class _ | TypeCast _ | Import _ | JSXFragment _
+  | BooleanLiteral _ | NullLiteral _ | BigIntLiteral _ | RegExpLiteral _
+  | ModuleRefLiteral _ | OptionalCall _ | OptionalMember _ | Super _ | This _
+  | TSTypeCast _ ->
       (state, Unit)

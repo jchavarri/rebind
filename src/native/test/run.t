@@ -301,7 +301,7 @@ Case with `new`
   type aWSAppSyncClientParam
   type aWSAppSyncClient
   
-  external makeAuth : apiKey:apiKey -> type_:authenticationType -> unit -> auth
+  external makeAuth : apiKey:apiKey -> _type:authenticationType -> unit -> auth
     = ""
   [@@mel.obj]
   
@@ -944,14 +944,18 @@ TODO - Appearances of `import` keyword
   > EOF
 
   $ rebind input.js | tee output.ml
+  type import
+  type meta
   type url
   type uRL
   type uRLParam
   type worker
   
-  external url : unit -> url = "url" [@@mel.get]
+  external import : import = "import"
+  external meta : import -> meta = "meta" [@@mel.get]
+  external url : meta -> url = "url" [@@mel.get]
   external uRL : string -> url -> uRL = "URL" [@@mel.new]
-  external makeURLParam : type_:string -> unit -> uRLParam = "" [@@mel.obj]
+  external makeURLParam : _type:string -> unit -> uRLParam = "" [@@mel.obj]
   external worker : uRL -> uRLParam -> worker = "Worker" [@@mel.new]
   
 
