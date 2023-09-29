@@ -1,4 +1,0 @@
-(library
- (name flow)
- (flags :standard -w -6-50)
- (wrapped false))

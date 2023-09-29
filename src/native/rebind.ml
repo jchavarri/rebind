@@ -29,7 +29,8 @@ let processContent () =
       (file, content)
   in
   let result =
-    Pprintast.string_of_structure (Shared.get_bindings (Some file) content)
+    Pprintast.string_of_structure
+      (Shared.get_bindings (Some (File_key.SourceFile file)) content)
   in
   let formatted =
     let open Ocamlformat_lib in

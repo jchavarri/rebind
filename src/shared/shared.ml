@@ -17,23 +17,36 @@ let get_output statements =
 
 let get_bindings file content =
   let parse_options =
+    let open Parser_env in
     Some
-      (let open Parser_env in
-       {
-         (* Always parse ES proposal syntax. The user-facing config option to
-            ignore/warn/enable them is handled during inference so that a clean error
-            can be surfaced (rather than a more cryptic parse error). *)
-         esproposal_class_instance_fields = true;
-         esproposal_class_static_fields = true;
-         esproposal_decorators = true;
-         esproposal_export_star_as = true;
-         types = true;
-         use_strict = false;
-       })
+      {
+        components = true;
+        enums = true;
+        (*
+         * Always parse ES proposal syntax. The user-facing config option to
+         * ignore/warn/enable them is handled during inference so that a clean error
+         * can be surfaced (rather than a more cryptic parse error).
+         *)
+        esproposal_decorators = true;
+        types = true;
+        use_strict = false;
+        module_ref_prefix = None;
+        module_ref_prefix_LEGACY_INTEROP = None;
+      }
   in
-  let ast, _ =
-    Parser_flow.program_file ~fail:true ~parse_options content
-      (Option.map (fun f -> Loc.SourceFile f) file)
+
+  let (_, ast), _parse_errors =
+    Parser_flow.program_file ~fail:false ~parse_options content file
   in
-  let _, statements, _ = ast in
-  get_output statements
+  (* if parse_errors <> [] then
+       let converted =
+         List.fold_left
+           (fun acc parse_error ->
+             Flow_errors_utils.ConcreteLocPrintableErrorSet.add
+               (error_of_parse_error file parse_error)
+               acc)
+           Flow_errors_utils.ConcreteLocPrintableErrorSet.empty parse_errors
+       in
+       Error converted
+     else Ok *)
+  get_output ast.statements
