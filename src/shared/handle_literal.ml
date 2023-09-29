@@ -1,7 +1,6 @@
-(* open Parser_flow.Ast.Literal
+type literal = String of string | Number of float
 
-let h (state : Shared_types.state) { value; raw = _ } =
-  match value with
+let h (state : Shared_types.state) literal =
+  match literal with
   | String v -> (state, Shared_types.String v)
   | Number _ -> (state, Float)
-  | Boolean _ | Null | RegExp _ -> (state, Unit) *)

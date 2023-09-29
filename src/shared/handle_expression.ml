@@ -120,7 +120,8 @@ and h state (_, expression) =
       let state, types =
         params.params
         |> List.fold_left
-             (fun (accState, accTypes) (_loc, p: ('a, 'b) Flow_ast.Function.Param.t) ->
+             (fun (accState, accTypes)
+                  ((_loc, p) : ('a, 'b) Flow_ast.Function.Param.t) ->
                match snd p.argument with
                | Parser_flow.Ast.Pattern.Identifier
                    { name = _loc, idName; annot = _; optional = _ } ->
@@ -208,10 +209,14 @@ and h state (_, expression) =
       in
       maybe_add_external state ObjectCreation originalContextName
         (objTypes @ [ Unit ])
+  | StringLiteral { value; raw = _; comments = _ } ->
+      Handle_literal.h state (String value)
+  | NumberLiteral { value; raw = _; comments = _ } ->
+      Handle_literal.h state (Number value)
   | Array _ | Sequence _ | Unary _ | Binary _ | Assignment _ | Update _
   | Logical _ | Conditional _ | Yield _ | TemplateLiteral _ | TaggedTemplate _
   | JSXElement _ | Class _ | TypeCast _ | MetaProperty _ | Import _
-  | JSXFragment _ | StringLiteral _ | BooleanLiteral _ | NullLiteral _
-  | NumberLiteral _ | BigIntLiteral _ | RegExpLiteral _ | ModuleRefLiteral _
-  | OptionalCall _ | OptionalMember _ | Super _ | This _ | TSTypeCast _ ->
+  | JSXFragment _ | BooleanLiteral _ | NullLiteral _ | BigIntLiteral _
+  | RegExpLiteral _ | ModuleRefLiteral _ | OptionalCall _ | OptionalMember _
+  | Super _ | This _ | TSTypeCast _ ->
       (state, Unit)
