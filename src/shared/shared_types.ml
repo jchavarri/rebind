@@ -39,9 +39,9 @@ type state = {
 }
 
 module type Statement = sig
-  val mapper : state -> Parser_flow.Ast.Statement.t -> state
+  val mapper : state -> ('M, 'T) Parser_flow.Ast.Statement.t -> state
 end
 
 module type T = sig
-  val mapper : state -> Parser_flow.Ast.Statement.t -> state
+  val mapper : state -> ('M, 'T) Parser_flow.Ast.Statement.t -> state
 end

@@ -1,4 +1,3 @@
 (library
  (name shared)
- (flags :standard -w -9)
- (libraries flow compiler-libs))
+ (libraries flow_parser compiler-libs))

@@ -48,34 +48,34 @@ let maybe_add_external state externalAttr name inputTypes =
         },
         lastType )
 
-let rec handle_callable_expr exprType callee arguments state =
+let rec handle_callable_expr exprType callee (_, arguments) state =
   let callee_loc, callee_exp = callee in
   let callee_name =
     match callee_exp with
-    | Identifier (_, name) -> name
+    | Identifier (_, { name; comments = _ }) -> name
     | Member
         {
           _object;
-          property = Member.PropertyIdentifier (_, name);
-          computed = _;
+          property = Member.PropertyIdentifier (_, { name; comments = _ });
+          comments = _;
         } ->
         name
     | _ -> ""
   in
   let state, right_side_types =
-    arguments
+    arguments.ArgList.arguments
     |> List.fold_left
          (fun (accState, accTypes) argument ->
            match argument with
            | Expression e ->
                let accState, lastType = h accState e in
                (accState, accTypes @ [ lastType ])
-           | Spread (_, _) -> failwith "Call.argument.Spread")
+           | Spread _ -> failwith "Call.argument.Spread")
          ({ state with parentContextName = callee_name ^ "Param" }, [])
   in
   match callee_exp with
   (* Maybe this shouldn't be nested here, and the recursion should continue... *)
-  | Identifier (_, name) -> (
+  | Identifier (_, { name; comments = _ }) -> (
       match (name, right_side_types) with
       | "require", String requireType :: [] -> (
           (* Discard the input types of this expression -they'll be just the string inside `require`-,
@@ -98,54 +98,59 @@ let rec handle_callable_expr exprType callee arguments state =
                 (ScopedModule (moduleName, remote))
                 local right_side_types
           | _, _ -> maybe_add_external state Val name right_side_types))
-  | Member { _object; property; computed = _ } -> (
+  | Member { _object; property; comments = _ } -> (
       let objectState, objectLastType = h state _object in
       match property with
-      | Member.PropertyIdentifier (_, name) ->
+      | Member.PropertyIdentifier (_, { name; comments = _ }) ->
           maybe_add_external objectState Send name
             ([ objectLastType ] @ right_side_types)
-      | Member.PropertyExpression _ -> failwith "Member.PropertyExpression")
+      | PropertyExpression _ -> failwith "Member.PropertyExpression"
+      | PropertyPrivateName _ -> failwith "Member.PropertyPrivateName")
   | _ -> h { state with right_side_types } (callee_loc, callee_exp)
 
 and h state (_, expression) =
   match expression with
   | Function f | ArrowFunction f ->
-      let params, _spread = f.params in
+      let _loc, params = f.params in
       let funName =
-        match f.id with Some (_loc, name) -> name | None -> "Callback"
+        match f.id with
+        | Some (_loc, { name; comments = _ }) -> name
+        | None -> "Callback"
       in
       let state, types =
-        params
+        params.params
         |> List.fold_left
-             (fun (accState, accTypes) (_loc, p) ->
-               match p with
+             (fun (accState, accTypes)
+                  ((_loc, p) : ('a, 'b) Flow_ast.Function.Param.t) ->
+               match snd p.argument with
                | Parser_flow.Ast.Pattern.Identifier
-                   { name = _loc, idName; typeAnnotation = _; optional = _ } ->
+                   { name = _loc, idName; annot = _; optional = _ } ->
                    let accState, lastType =
-                     maybe_add_identifier accState idName
+                     maybe_add_identifier accState idName.name
                    in
                    (accState, accTypes @ [ lastType ])
-               | Object _ | Array _ | Assignment _ | Expression _ ->
+               | Object _ | Array _ | Expression _ ->
                    failwith "Unsupported pattern in Function or ArrowFunction")
              (state, [])
       in
       (maybe_add_identifier state funName |> get_state, Fun (funName, types))
-  | Identifier (_, name) -> (
+  | Identifier (_, { name; comments = _ }) -> (
       match Utils.try_find_id name state.identifiers with
       | Some (Module n) -> maybe_add_external state Module n []
       | Some (ModuleProperty (moduleName, local, remote)) ->
           maybe_add_external state (ScopedModule (moduleName, remote)) local []
       | _ -> maybe_add_identifier state name)
-  | Literal lit -> Handle_literal.h state lit
-  | Call { callee; arguments } ->
+  | Call { callee; arguments; targs = _; comments = _ } ->
       handle_callable_expr CallExpr callee arguments state
-  | New { callee; arguments } ->
-      handle_callable_expr NewExpr callee arguments state
+  | New { callee; arguments; targs = _; comments = _ } -> (
+      match arguments with
+      | Some arguments -> handle_callable_expr NewExpr callee arguments state
+      | None -> failwith "New with arguments None")
   (* I know this duplication is ugly but yolo *)
-  | Member { _object; property; computed = _ } -> (
+  | Member { _object; property; comments = _ } -> (
       let objectState, objectLastType =
         match _object with
-        | _, Identifier (_, name) -> (
+        | _, Identifier (_, { name; comments = _ }) -> (
             match Utils.try_find_id name state.identifiers with
             | Some (Module n) -> maybe_add_external state Module n []
             | Some (ModuleProperty (moduleName, local, remote)) ->
@@ -156,38 +161,41 @@ and h state (_, expression) =
         | _ -> h state _object
       in
       match property with
-      | Member.PropertyIdentifier (_, name) ->
+      | Member.PropertyIdentifier (_, { name; comments = _ }) ->
           maybe_add_external objectState Get name [ objectLastType ]
-      | PropertyExpression _ -> failwith "Member.PropertyExpression")
+      | PropertyExpression _ -> failwith "Member.PropertyExpression"
+      | PropertyPrivateName _ -> failwith "Member.PropertyPrivateName")
   | Object obj ->
       let originalContextName = state.parentContextName in
       let state, objTypes =
         obj.properties
         |> List.fold_left
              (fun (accState, accTypes) property ->
-               let property =
+               let propertyKey, propertyValue =
                  match property with
-                 | Object.Property (_loc, property) -> property
+                 | Object.Property (_loc, property) -> (
+                     match property with
+                     | Init { key; value; shorthand = _ } -> (key, value)
+                     | Method _ ->
+                         failwith "Object property using unsupported Method"
+                     | Get _ -> failwith "Object property using unsupported Get"
+                     | Set _ -> failwith "Object property using unsupported Set"
+                     )
                  | SpreadProperty _ ->
                      failwith "Spread properties are unsupported"
                in
                let propertyName =
-                 match property.key with
-                 | Identifier (_loc, name) -> (
-                     match name with
-                     | "" -> "_"
-                     | _ ->
-                         let first_char = name.[0] in
-                         if Char.uppercase_ascii first_char = first_char then
-                           "_" ^ name
-                         else name)
-                 | Literal _ | Computed _ ->
+                 match propertyKey with
+                 | Identifier (_loc, { name; comments = _ }) ->
+                     Ast_utils.correct_labelled_arg name
+                 | Computed _ | StringLiteral _ | NumberLiteral _
+                 | BigIntLiteral _ | PrivateName _ ->
                      failwith "Computed properties in objects are unsupported"
                in
                let propState, propType =
                  h
                    { accState with parentContextName = propertyName }
-                   property.value
+                   propertyValue
                in
                let namedType = Named (propertyName, propType) in
                (propState, namedType :: accTypes))
@@ -195,8 +203,17 @@ and h state (_, expression) =
       in
       maybe_add_external state ObjectCreation originalContextName
         (objTypes @ [ Unit ])
-  | This | Super | Array _ | Sequence _ | Unary _ | Binary _ | Assignment _
-  | Update _ | Logical _ | Conditional _ | Yield _ | Comprehension _
-  | Generator _ | TemplateLiteral _ | TaggedTemplate _ | JSXElement _ | Class _
-  | TypeCast _ | MetaProperty _ ->
+  | MetaProperty { meta = _, meta; property = _, property; comments = _ } ->
+      let state, lastType = maybe_add_external state Val meta.name [] in
+      maybe_add_external state Get property.name [ lastType ]
+  | StringLiteral { value; raw = _; comments = _ } ->
+      Handle_literal.h state (String value)
+  | NumberLiteral { value; raw = _; comments = _ } ->
+      Handle_literal.h state (Number value)
+  | Array _ | Sequence _ | Unary _ | Binary _ | Assignment _ | Update _
+  | Logical _ | Conditional _ | Yield _ | TemplateLiteral _ | TaggedTemplate _
+  | JSXElement _ | Class _ | TypeCast _ | Import _ | JSXFragment _
+  | BooleanLiteral _ | NullLiteral _ | BigIntLiteral _ | RegExpLiteral _
+  | ModuleRefLiteral _ | OptionalCall _ | OptionalMember _ | Super _ | This _
+  | TSTypeCast _ ->
       (state, Unit)

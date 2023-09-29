@@ -185,7 +185,15 @@ let safe_identifiers identifiers =
   origToSafe
 
 let transform state =
-  let { identifiers; outputTypes; outputExternals } = state in
+  let {
+    identifiers;
+    outputTypes;
+    outputExternals;
+    right_side_types = _;
+    parentContextName = _;
+  } =
+    state
+  in
   let safeIds = safe_identifiers identifiers in
   (List.rev outputTypes
   |> List.map (fun outputType ->
