@@ -28,7 +28,7 @@ let get_bindings file content =
          * can be surfaced (rather than a more cryptic parse error).
          *)
         esproposal_decorators = true;
-        types = true;
+        types = false;
         use_strict = false;
         module_ref_prefix = None;
         module_ref_prefix_LEGACY_INTEROP = None;

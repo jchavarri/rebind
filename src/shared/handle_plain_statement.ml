@@ -34,30 +34,33 @@ let h (state : Shared_types.state)
         default;
         comments = _;
       } -> (
+      let state =
+        match default with
+        | Some
+            { identifier = _loc, identifier; remote_default_name_def_loc = _ }
+          ->
+            let state, _lastType =
+              Handle_expression.maybe_add_identifier
+                ~customType:
+                  (ModuleProperty (source, identifier.name, "default"))
+                state identifier.name
+            in
+            state
+        | None -> state
+      in
       match specifiers with
       | None -> state
       | Some specifier -> (
           match (import_kind, source) with
           | ImportValue, name -> (
-              match (specifier, default) with
-              | ( ImportDeclaration.ImportNamespaceSpecifier
-                    (_loc, (_key, { name = specifierName; comments = _ })),
-                  Some _ ) ->
-                  let state, _lastType =
-                    Handle_expression.maybe_add_identifier
-                      ~customType:
-                        (ModuleProperty (name, specifierName, "default"))
-                      state specifierName
-                  in
-                  state
-              | ( ImportNamespaceSpecifier (_loc, (_anotherLoc, specifierName)),
-                  None ) ->
+              match specifier with
+              | ImportNamespaceSpecifier (_loc, (_anotherLoc, specifierName)) ->
                   let state, _lastType =
                     Handle_expression.maybe_add_identifier
                       ~customType:(Module name) state specifierName.name
                   in
                   state
-              | ImportNamedSpecifiers specifiers, _ ->
+              | ImportNamedSpecifiers specifiers ->
                   specifiers
                   |> List.fold_left
                        (fun state
