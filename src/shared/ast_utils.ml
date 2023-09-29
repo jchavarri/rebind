@@ -13,6 +13,25 @@ let strip_chars charsToStrip s =
   in
   Bytes.to_string (aux 0 0)
 
+let process_reserved_words name =
+  match name with
+  | "object" -> "object_"
+  | "type" -> "type_"
+  | "done" -> "done_"
+  | "then" -> "then_"
+  | n -> n
+
+let correct_labelled_arg name =
+  let corrected_name =
+    match name with
+    | "" -> "_"
+    | _ ->
+        let first_char = name.[0] in
+        if Char.uppercase_ascii first_char = first_char then "_" ^ name
+        else name
+  in
+  process_reserved_words corrected_name
+
 (* helpers *)
 (* TODO: turn foo_bar into foo_bar_ *)
 let correct_identifier ident =
@@ -39,12 +58,7 @@ let correct_identifier ident =
       | false -> correctedName
     in
     let correctedName = String.uncapitalize_ascii correctedName in
-    match correctedName with
-    | "object" -> "object_"
-    | "type" -> "type_"
-    | "done" -> "done_"
-    | "then" -> "then_"
-    | n -> n
+    process_reserved_words correctedName
 
 let ast_helper_str_lident a =
   match a with

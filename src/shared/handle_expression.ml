@@ -187,13 +187,7 @@ and h state (_, expression) =
                let propertyName =
                  match propertyKey with
                  | Identifier (_loc, { name; comments = _ }) -> (
-                     match name with
-                     | "" -> "_"
-                     | _ ->
-                         let first_char = name.[0] in
-                         if Char.uppercase_ascii first_char = first_char then
-                           "_" ^ name
-                         else name)
+                     Ast_utils.correct_labelled_arg name)
                  | Computed _ | StringLiteral _ | NumberLiteral _
                  | BigIntLiteral _ | PrivateName _ ->
                      failwith "Computed properties in objects are unsupported"
