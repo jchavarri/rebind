@@ -4,16 +4,30 @@ let init_state =
     right_side_types = [];
     output_types = [];
     output_externals = [];
+    output_statements = [];
     identifiers = Identifiers.empty;
     parent_context_name = "";
   }
 
-let get_output statements =
-  statements
-  |> List.fold_left
-       (fun acc_state statement -> Handle_plain_statement.h acc_state statement)
-       init_state
-  |> Ir_transformer.transform
+let get_output (statements : (Loc.t, Loc.t) Flow_ast.Statement.t list) =
+  let state =
+    statements
+    |> List.fold_left
+         (fun acc_state statement ->
+           Handle_plain_statement.h acc_state statement)
+         init_state
+  in
+  let state =
+    {
+      state with
+      output_statements =
+        (let result : Parsetree.structure =
+           List.map Mapper.topStatementsMapper statements |> List.concat
+         in
+         result);
+    }
+  in
+  Ir_transformer.transform state
 
 let get_bindings file content =
   let parse_options =

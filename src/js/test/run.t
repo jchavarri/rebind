@@ -6,4 +6,8 @@ Prepare an input file to test some snippets to exercise common functionality
   > EOF
 
   $ node input.js
-  { code: 'type nano\nexternal nano : string -> float -> nano = "Nano"' }
+  {
+    code: 'type nano\n' +
+      'external nano : string -> float -> nano = "Nano"\n' +
+      'let nano = nano "test" 4'
+  }

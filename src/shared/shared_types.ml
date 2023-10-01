@@ -35,5 +35,6 @@ type state = {
       (* The carried types in an expression *)
   output_types : string list;
   output_externals : external_statement list;
+  output_statements : Parsetree.structure_item list;
   parent_context_name : string;
 }

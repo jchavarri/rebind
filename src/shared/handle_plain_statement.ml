@@ -1,7 +1,6 @@
 open Parser_flow.Ast.Statement
 
-let h (state : Shared_types.state)
-    ((_, statement) : (Loc.t, Loc.t) Flow_ast.Statement.t) =
+let h (state : Shared_types.state) (_, statement) =
   (* Reset the expression related state *)
   let state = { state with right_side_types = [] } in
   match statement with

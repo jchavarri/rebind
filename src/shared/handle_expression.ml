@@ -97,7 +97,9 @@ let rec handle_callable_expr exprType callee (_, arguments) state =
               maybe_add_external state
                 (ScopedModule (moduleName, remote))
                 local right_side_types
-          | _, _ -> maybe_add_external state Val name right_side_types))
+          | _, _ ->
+              let t = maybe_add_external state Val name right_side_types in
+              t))
   | Member { _object; property; comments = _ } -> (
       let objectState, objectLastType = h state _object in
       match property with

@@ -189,6 +189,7 @@ let transform state =
     identifiers;
     output_types;
     output_externals;
+    output_statements;
     right_side_types = _;
     parent_context_name = _;
   } =
@@ -209,3 +210,4 @@ let transform state =
     |> List.map (fun structureItem ->
            external_with_attribute structureItem.name structureItem.types
              safeIds structureItem.attr))
+  @ List.rev output_statements
