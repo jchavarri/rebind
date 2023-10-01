@@ -20,6 +20,7 @@ type external_statement_attr =
     (* Adding a suffix to `New` to avoid conflicts with Flow's SpiderMonkey types *)
   | ModuleAndNew
   | ScopedModule of string * string (* (moduleName, scopedProperty) *)
+  | ScopedModuleAndNew of string * string (* (moduleName, scopedProperty) *)
 
 type external_statement = {
   attr : external_statement_attr;

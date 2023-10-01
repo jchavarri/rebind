@@ -435,6 +435,51 @@ Case with `new`
   Error: Unbound value expressionPlaceholder
   [2]
 
+`new` from a module using import
+
+  $ cat > input.js <<\EOF
+  > import { Blue as Red } from 'path/to/blue.js';
+  > const instance = new Red("config");
+  > import { Green } from 'path/to/green.js';
+  > const instance2 = new Green("config");
+  > import Pink from 'path/to/pink.js';
+  > const instance2 = new Pink("config");
+  > EOF
+
+  $ rebind input.js | tee output.ml
+  type red
+  type green
+  type pink
+  
+  external red : string -> red = "Blue"
+  [@@mel.new] [@@mel.module "path/to/blue.js"]
+  
+  external green : string -> green = "Green"
+  [@@mel.new] [@@mel.module "path/to/green.js"]
+  
+  external pink : string -> pink = "default"
+  [@@mel.new] [@@mel.module "path/to/pink.js"]
+  
+  let instance2 = expressionPlaceholder;;
+  
+  statementBail
+  
+  let instance2 = expressionPlaceholder;;
+  
+  statementBail
+  
+  let instance = expressionPlaceholder;;
+  
+  statementBail
+  
+
+  $ melc -ppx melppx output.ml
+  File "output.ml", line 14, characters 16-37:
+  14 | let instance2 = expressionPlaceholder;;
+                       ^^^^^^^^^^^^^^^^^^^^^
+  Error: Unbound value expressionPlaceholder
+  [2]
+
 Named import
 
   $ cat > input.js <<\EOF
@@ -574,9 +619,9 @@ Unexpected token error (no need to run melc)
   $ rebind input.js | tee output.ml
   Fatal error: exception Failure("Computed properties in objects are unsupported")
   Raised at Stdlib.failwith in file "stdlib.ml", line 29, characters 17-33
-  Called from Shared__Handle_expression.h.(fun) in file "src/shared/handle_expression.ml", line 195, characters 21-78
+  Called from Shared__Handle_expression.h.(fun) in file "src/shared/handle_expression.ml", line 199, characters 21-78
   Called from Stdlib__List.fold_left in file "list.ml", line 123, characters 24-34
-  Called from Shared__Handle_expression.h in file "src/shared/handle_expression.ml", line 173, characters 8-1023
+  Called from Shared__Handle_expression.h in file "src/shared/handle_expression.ml", line 177, characters 8-1023
   Called from Shared__Handle_expression.handle_callable_expr.(fun) in file "src/shared/handle_expression.ml", line 71, characters 40-52
   Called from Stdlib__List.fold_left in file "list.ml", line 123, characters 24-34
   Called from Shared__Handle_expression.handle_callable_expr in file "src/shared/handle_expression.ml", line 66, characters 4-399
