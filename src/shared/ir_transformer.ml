@@ -111,6 +111,8 @@ let external_with_attribute originalName types safeIds attr =
     | Val -> ([], originalName)
     | NewAttr -> ([ ("mel.new", None) ], originalName)
     | ModuleAndNew -> ([ ("mel.new", None); ("mel.module", None) ], originalName)
+    | ScopedModuleAndNew (name, scopeProperty) ->
+        ([ ("mel.new", None); ("mel.module", Some name) ], scopeProperty)
     | ScopedModule (name, scopeProperty) ->
         ([ ("mel.module", Some name) ], scopeProperty)
   in

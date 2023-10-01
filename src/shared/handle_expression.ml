@@ -90,6 +90,10 @@ let rec handle_callable_expr exprType callee (_, arguments) state =
           match (exprType, Utils.try_find_id name state.identifiers) with
           | NewExpr, Some (Module n) ->
               maybe_add_external state ModuleAndNew n right_side_types
+          | NewExpr, Some (ModuleProperty (moduleName, local, remote)) ->
+              maybe_add_external state
+                (ScopedModuleAndNew (moduleName, remote))
+                local right_side_types
           | NewExpr, _ -> maybe_add_external state NewAttr name right_side_types
           | _, Some (Module n) ->
               maybe_add_external state Module n right_side_types
@@ -210,10 +214,10 @@ and h state (_, expression) =
       Handle_literal.h state (String value)
   | NumberLiteral { value; raw = _; comments = _ } ->
       Handle_literal.h state (Number value)
+  | Import _ -> (state, Unit)
   | Array _ | Sequence _ | Unary _ | Binary _ | Assignment _ | Update _
   | Logical _ | Conditional _ | Yield _ | TemplateLiteral _ | TaggedTemplate _
-  | JSXElement _ | Class _ | TypeCast _ | Import _ | JSXFragment _
-  | BooleanLiteral _ | NullLiteral _ | BigIntLiteral _ | RegExpLiteral _
-  | ModuleRefLiteral _ | OptionalCall _ | OptionalMember _ | Super _ | This _
-  | TSTypeCast _ ->
+  | JSXElement _ | Class _ | TypeCast _ | JSXFragment _ | BooleanLiteral _
+  | NullLiteral _ | BigIntLiteral _ | RegExpLiteral _ | ModuleRefLiteral _
+  | OptionalCall _ | OptionalMember _ | Super _ | This _ | TSTypeCast _ ->
       (state, Unit)
