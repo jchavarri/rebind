@@ -319,20 +319,21 @@ and literalMapper ?(isNegativeNumber = false) literal =
         (astHelperStrLidIdent ~correct:false
            [ "Js"; (match boolean with true -> "true_" | false -> "false_") ])
   | Null -> Exp.ident (astHelperStrLidIdent ~correct:false [ "Js"; "null" ])
-  | Number n ->
-      let intN = int_of_float n in
-      if float_of_int intN = n then
-        Exp.constant
-          (Pconst_integer
-             ( string_of_int
-                 (match isNegativeNumber with true -> -intN | false -> intN),
-               None ))
-      else
-        Exp.constant
-          (Pconst_float
-             ( string_of_float
-                 (match isNegativeNumber with true -> -.n | false -> n),
-               None ))
+  | Number n -> (
+      match Handle_literal.is_int n with
+      | true ->
+          let intN = int_of_float n in
+          Exp.constant
+            (Pconst_integer
+               ( string_of_int
+                   (match isNegativeNumber with true -> -intN | false -> intN),
+                 None ))
+      | false ->
+          Exp.constant
+            (Pconst_float
+               ( string_of_float
+                   (match isNegativeNumber with true -> -.n | false -> n),
+                 None )))
   | RegExp -> placeholder "regexPlaceholder"
 
 and jsxElementMapper ~context

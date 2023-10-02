@@ -12,6 +12,7 @@ let external_type_to_string t =
   match t with
   | String _ -> "string"
   | Float -> "float"
+  | Int -> "int"
   | Abstract a -> a
   | Unit -> "unit"
   | Fun (_, _) ->

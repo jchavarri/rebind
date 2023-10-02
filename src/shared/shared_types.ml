@@ -1,6 +1,7 @@
 type external_base_type =
   | String of string
   | Float
+  | Int
   | Abstract of string
   | Unit
   | Named of string * external_base_type
