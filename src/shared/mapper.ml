@@ -268,7 +268,8 @@ and functionMapper ~context ~returnType
      function in props and state declaration. don't forget to unset `context.addPropsAndStateDeclImmediately`; *)
   let bodyReason =
     match body with
-    | Function.BodyExpression expression -> expressionMapper ~context expression
+    | Function.BodyExpression expression ->
+        expression_mapper ~context expression
     | Function.BodyBlock (_, body) -> statementBlockMapper ~context body
   in
   let wrapBodyInReturnType body =
@@ -383,7 +384,7 @@ and jsxElementMapper ~context
                         (_, { ExpressionContainer.expression; _ })) -> (
                       match expression with
                       | ExpressionContainer.Expression expr ->
-                          expressionMapper ~context expr
+                          expression_mapper ~context expr
                       | ExpressionContainer.EmptyExpression -> expUnit)
                 in
                 match name with
@@ -445,7 +446,7 @@ and jsxChildMapper ~context
   | ExpressionContainer { ExpressionContainer.expression; _ } -> (
       match expression with
       | ExpressionContainer.Expression expr ->
-          Some (expressionMapper ~context expr)
+          Some (expression_mapper ~context expr)
       | ExpressionContainer.EmptyExpression -> Some expUnit)
   | Text { Text.value; _ } ->
       (* JS jsx is whitespace sensitive and scatters around "\n          " in the AST *)
@@ -497,7 +498,7 @@ and objectMapper ~context
                               | Computed _ -> [ "notThereYet" ]
                             in
                             ( astHelperStrLidIdent keyReason,
-                              expressionMapper ~context value )
+                              expression_mapper ~context value )
                         | Property (_, (Method _ | Get _ | Set _)) ->
                             ( astHelperStrLidIdent
                                 [
@@ -524,7 +525,7 @@ and memberMapper ~context
      transform into foo##bar, which Melange will pick up and compile (back) into dot. *)
   (* TODO: actually implement this *)
   let defaultCase () =
-    let left = expressionMapper ~context objectWrap in
+    let left = expression_mapper ~context objectWrap in
     match property with
     | Member.PropertyExpression ((_, NumberLiteral { value = n; _ }) as expr) ->
         (* foo[1] => foo.(1); *)
@@ -536,7 +537,7 @@ and memberMapper ~context
               (Nolabel, left);
               (Nolabel, Exp.constant (Pconst_integer (string_of_int intN, None)));
             ]
-        else expressionMapper ~context expr
+        else expression_mapper ~context expr
     (* astexplorer flow says foo[bar], bar is an identifier. In reality this flow parses it as an expression *)
     | PropertyIdentifier (_, { name; _ }) -> (
         match _object with
@@ -563,7 +564,7 @@ and memberMapper ~context
             Exp.apply
               (Exp.ident
                  (astHelperStrLidIdent ~correct:false [ "ReactDOMRe"; name ]))
-              [ (Nolabel, expressionMapper ~context exprWrap) ]
+              [ (Nolabel, expression_mapper ~context exprWrap) ]
         | _ ->
             (* if computed then
                       (* foo.[bar] => foo.(bar); treat as array *)
@@ -571,14 +572,15 @@ and memberMapper ~context
                         (Exp.ident
                            (astHelperStrLidIdent ~correct:false [ "Array"; "get" ]))
                         [
-                          (Nolabel, left); (Nolabel, expressionMapper ~context exprWrap);
+                          (Nolabel, left); (Nolabel, expression_mapper ~context exprWrap);
                         ]
                     else *)
             (* foo.bar => foo##bar; *)
             Exp.apply
               (Exp.ident (astHelperStrLidIdent ~correct:false [ "##" ]))
-              [ (Nolabel, left); (Nolabel, expressionMapper ~context exprWrap) ]
-        )
+              [
+                (Nolabel, left); (Nolabel, expression_mapper ~context exprWrap);
+              ])
     | PropertyPrivateName _ ->
         placeholder "memberMapperPropertyPrivateNameNotImplementedYet"
   in
@@ -592,7 +594,7 @@ and memberMapper ~context
                 (Exp.ident
                    (astHelperStrLidIdent ~correct:false
                       [ "ReactRe"; "PropTypes"; name ]))
-                [ (Nolabel, expressionMapper ~context objectWrap) ]
+                [ (Nolabel, expression_mapper ~context objectWrap) ]
           | "oneOfType" | "oneOf" | "objectOf" | "instanceOf" | "arrayOf"
           | "string" | "bool" | "number" | "node" | "symbol" | "any" | "element"
           | "func" | "shape" ->
@@ -604,7 +606,7 @@ and memberMapper ~context
                 (astHelperStrLidIdent ~correct:false
                    [ "ReactRe"; "PropTypes"; "object_" ])
           | _unrecognizedPropName -> defaultCase ())
-      | PropertyExpression expr -> expressionMapper ~context expr
+      | PropertyExpression expr -> expression_mapper ~context expr
       | PropertyPrivateName _ ->
           placeholder "memberMapperPropertyPrivateNameNotImplementedYet")
   | Yes _ -> (
@@ -658,7 +660,7 @@ and statementMapper ~context statement =
         match init with
         | None ->
             Exp.construct (astHelperStrLidIdent ~correct:false [ "None" ]) None
-        | Some e -> expressionMapper ~context e
+        | Some e -> expression_mapper ~context e
       in
       let innerMostExpr =
         match context.terminalExpr with None -> expUnit | Some expr -> expr
@@ -706,19 +708,19 @@ and statementMapper ~context statement =
       let result =
         match argument with
         | None -> expUnit
-        | Some expr -> expressionMapper ~context expr
+        | Some expr -> expression_mapper ~context expr
       in
       match context.terminalExpr with
       | None -> result
       | Some expr -> Exp.sequence result expr)
   | Expression { Statement.Expression.expression; _ } -> (
       match context.terminalExpr with
-      | None -> expressionMapper ~context expression
-      | Some expr -> Exp.sequence (expressionMapper ~context expression) expr)
+      | None -> expression_mapper ~context expression
+      | Some expr -> Exp.sequence (expression_mapper ~context expression) expr)
   | If { test; consequent; alternate; _ } -> (
       let result =
         Exp.ifthenelse
-          (expressionMapper ~context test)
+          (expression_mapper ~context test)
           (statementMapper
              ~context:{ context with terminalExpr = None }
              consequent)
@@ -758,7 +760,7 @@ and statementMapper ~context statement =
       | ExportDefaultDeclaration.Declaration decl ->
           statementMapper ~context decl
       | ExportDefaultDeclaration.Expression expr ->
-          expressionMapper ~context expr)
+          expression_mapper ~context expr)
   | ExportNamedDeclaration { ExportNamedDeclaration.declaration; _ } -> (
       match declaration with
       | None -> expUnit
@@ -775,7 +777,7 @@ and statementMapper ~context statement =
       | None -> placeholder "statementBail"
       | Some expr -> Exp.sequence (placeholder "statementBail") expr)
 
-and expressionMapper ~context
+and expression_mapper ~context
     ((_, expression) : (Loc.t, Loc.t) Parser_flow.Ast.Expression.t) :
     Parsetree.expression =
   let open Parser_flow.Ast in
@@ -790,22 +792,27 @@ and expressionMapper ~context
         arguments = _, { arguments; _ };
         _;
       } -> (
-      let argumentsIntoReasonArguments arguments =
+      let to_ocaml_args arguments =
         List.map
           (fun argument ->
             match argument with
-            | Expression e -> expressionMapper ~context e
+            | Expression e -> expression_mapper ~context e
             | Spread (_, _) -> placeholder "argumentSpreadNotImplementedYet")
           arguments
       in
-      let processArguments arguments =
+      let process_args arguments =
         (* see Expression.Function above: *)
         (* Js: () => 1 has 0 param. In OCaml, it has one param: unit. *)
-        match argumentsIntoReasonArguments arguments with
+        match to_ocaml_args arguments with
         | [] -> [ (Nolabel, expUnit) ]
         | oneArgOrMore -> List.map (fun arg -> (Nolabel, arg)) oneArgOrMore
       in
       match (callee, context.insideReactClass, arguments) with
+      | ( Identifier (_, { name = "require"; comments = _ }),
+          _,
+          [ Expression (_, StringLiteral { value; _ }) ] ) ->
+          Exp.ident
+            (astHelperStrLidIdent [ Ast_utils.correct_identifier value ])
       | ( Member
             {
               Member._object = _, This _;
@@ -818,8 +825,8 @@ and expressionMapper ~context
             (Exp.ident
                (astHelperStrLidIdent ~correct:false [ "ReactRe"; "setState" ]))
             ((Nolabel, Exp.ident (astHelperStrLidIdent [ "this" ]))
-            :: processArguments arguments)
-      | ( Expression.Member
+            :: process_args arguments)
+      | ( Member
             {
               Expression.Member._object =
                 _, Expression.Identifier (_, { name = "React"; _ });
@@ -865,7 +872,7 @@ and expressionMapper ~context
                             Cf.val_ (astHelperStrLidStr name) Immutable
                               (Cfk_concrete
                                  ( Fresh,
-                                   expressionMapper
+                                   expression_mapper
                                      ~context:
                                        {
                                          context with
@@ -875,16 +882,17 @@ and expressionMapper ~context
                         | "mixins" ->
                             Cf.val_ (astHelperStrLidStr name) Immutable
                               (Cfk_concrete
-                                 (Fresh, expressionMapper ~context valueWrap))
+                                 (Fresh, expression_mapper ~context valueWrap))
                         | "displayName" ->
                             hasDisplayNameAlready := true;
                             Cf.val_ (astHelperStrLidStr name) Immutable
                               (Cfk_concrete
-                                 (Fresh, expressionMapper ~context valueWrap))
+                                 (Fresh, expression_mapper ~context valueWrap))
                         | name ->
                             Cf.val_ (astHelperStrLidStr name) Mutable
                               (Cfk_concrete
-                                 (Fresh, expressionMapper ~context valueWrap))))
+                                 (Fresh, expression_mapper ~context valueWrap)))
+                    )
                 | Property _ | SpreadProperty _ ->
                     Cf.val_
                       (astHelperStrLidStr "notSureWhat")
@@ -920,8 +928,8 @@ and expressionMapper ~context
             [ (Nolabel, createClassObj) ]
       | _, _, _ ->
           Exp.apply
-            (expressionMapper ~context calleeWrap)
-            (processArguments arguments))
+            (expression_mapper ~context calleeWrap)
+            (process_args arguments))
   | Identifier (_, { name; _ }) -> Exp.ident (astHelperStrLidIdent [ name ])
   | This _ -> Exp.ident (astHelperStrLidIdent [ "this" ])
   | StringLiteral { value; _ } -> literalMapper (String value)
@@ -938,21 +946,21 @@ and expressionMapper ~context
           Exp.apply
             (Exp.ident (astHelperStrLidIdent ~correct:false [ "||" ]))
             [
-              (Nolabel, expressionMapper ~context leftWrap);
-              (Nolabel, expressionMapper ~context rightWrap);
+              (Nolabel, expression_mapper ~context leftWrap);
+              (Nolabel, expression_mapper ~context rightWrap);
             ]
       | And -> (
           (* common pattern: `show && <Foo />`. Transpile to `show ? <Foo /> : Js.null` *)
           match right with
           | JSXElement _ ->
               Exp.match_
-                (expressionMapper ~context leftWrap)
+                (expression_mapper ~context leftWrap)
                 [
                   {
                     pc_lhs =
                       Pat.construct (astHelperStrLidIdent [ "true" ]) None;
                     pc_guard = None;
-                    pc_rhs = expressionMapper ~context rightWrap;
+                    pc_rhs = expression_mapper ~context rightWrap;
                   };
                   {
                     pc_lhs =
@@ -967,8 +975,8 @@ and expressionMapper ~context
               Exp.apply
                 (Exp.ident (astHelperStrLidIdent ~correct:false [ "&&" ]))
                 [
-                  (Nolabel, expressionMapper ~context leftWrap);
-                  (Nolabel, expressionMapper ~context rightWrap);
+                  (Nolabel, expression_mapper ~context leftWrap);
+                  (Nolabel, expression_mapper ~context rightWrap);
                 ])
       | NullishCoalesce -> placeholder "NullishCoallesce")
   | JSXElement element -> jsxElementMapper ~context element
@@ -980,7 +988,7 @@ and expressionMapper ~context
               Exp.construct
                 (astHelperStrLidIdent ~correct:false [ "None" ])
                 None
-          | Expression e -> expressionMapper ~context e
+          | Expression e -> expression_mapper ~context e
           | Spread (_, _) -> placeholder "argumentSpreadNotImplementedYet")
         elements
       |> Exp.array
@@ -1017,19 +1025,19 @@ and expressionMapper ~context
             (Exp.ident
                (astHelperStrLidIdent ~correct:false
                   [ "Js"; "Null_undefined"; "test" ]))
-            [ (Nolabel, expressionMapper ~context right) ]
+            [ (Nolabel, expression_mapper ~context right) ]
       | Binary.Equal, _, (_, NullLiteral _) ->
           Exp.apply
             (Exp.ident
                (astHelperStrLidIdent ~correct:false
                   [ "Js"; "Null_undefined"; "test" ]))
-            [ (Nolabel, expressionMapper ~context left) ]
+            [ (Nolabel, expression_mapper ~context left) ]
       | _ ->
           Exp.apply
             (Exp.ident (astHelperStrLidIdent ~correct:false [ operatorReason ]))
             [
-              (Nolabel, expressionMapper ~context left);
-              (Nolabel, expressionMapper ~context right);
+              (Nolabel, expression_mapper ~context left);
+              (Nolabel, expression_mapper ~context right);
             ])
   | Assignment { Assignment.left = _, left; right; _ } -> (
       match left with
@@ -1047,7 +1055,7 @@ and expressionMapper ~context
           (* TODO: this is redundant with what's above *)
           let leftReason =
             match left with
-            | Pattern.Expression expr -> expressionMapper ~context expr
+            | Pattern.Expression expr -> expression_mapper ~context expr
             | Pattern.Identifier { Pattern.Identifier.name = _, { name; _ }; _ }
               ->
                 Exp.ident (astHelperStrLidIdent [ name ])
@@ -1056,7 +1064,7 @@ and expressionMapper ~context
           Exp.apply
             (Exp.ident (astHelperStrLidIdent ~correct:false [ "#=" ]))
             [
-              (Nolabel, leftReason); (Nolabel, expressionMapper ~context right);
+              (Nolabel, leftReason); (Nolabel, expression_mapper ~context right);
             ])
   | Unary { Unary.operator; argument = (_, argument) as argumentWrap; _ } -> (
       match operator with
@@ -1067,11 +1075,11 @@ and expressionMapper ~context
               Exp.apply
                 (Exp.ident
                    (astHelperStrLidIdent [ "pleaseWriteAIsTruthyFunction" ]))
-                [ (Nolabel, expressionMapper ~context innerArgument) ]
+                [ (Nolabel, expression_mapper ~context innerArgument) ]
           | _ ->
               Exp.apply
                 (Exp.ident (astHelperStrLidIdent [ "not" ]))
-                [ (Nolabel, expressionMapper ~context argumentWrap) ])
+                [ (Nolabel, expression_mapper ~context argumentWrap) ])
       | Unary.Minus -> (
           match argument with
           | NumberLiteral { value; _ } ->
@@ -1079,25 +1087,25 @@ and expressionMapper ~context
           | _ ->
               Exp.apply
                 (Exp.ident (astHelperStrLidIdent [ "~-" ]))
-                [ (Nolabel, expressionMapper ~context argumentWrap) ])
+                [ (Nolabel, expression_mapper ~context argumentWrap) ])
       | Unary.Plus | Unary.BitNot | Unary.Typeof | Unary.Void | Unary.Delete
       | Unary.Await ->
           Exp.apply
             (Exp.ident (astHelperStrLidIdent [ "unaryPlaceholder" ]))
-            [ (Nolabel, expressionMapper ~context argumentWrap) ])
+            [ (Nolabel, expression_mapper ~context argumentWrap) ])
   | Conditional { Conditional.test; consequent; alternate; _ } ->
       Exp.match_
-        (expressionMapper ~context test)
+        (expression_mapper ~context test)
         [
           {
             pc_lhs = Pat.construct (astHelperStrLidIdent [ "true" ]) None;
             pc_guard = None;
-            pc_rhs = expressionMapper ~context consequent;
+            pc_rhs = expression_mapper ~context consequent;
           };
           {
             pc_lhs = Pat.construct (astHelperStrLidIdent [ "false" ]) None;
             pc_guard = None;
-            pc_rhs = expressionMapper ~context alternate;
+            pc_rhs = expression_mapper ~context alternate;
           };
         ]
   | BigIntLiteral _ | TemplateLiteral _ | Sequence _ | Update _ | New _

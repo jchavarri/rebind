@@ -213,4 +213,4 @@ let transform state =
     |> List.map (fun structureItem ->
            external_with_attribute structureItem.name structureItem.types
              safeIds structureItem.attr))
-  @ List.rev output_statements
+  @ output_statements
