@@ -1,3 +1,5 @@
+module T = New_shared
+
 let cat filename =
   let ic = open_in_bin filename in
   let len = in_channel_length ic in
@@ -30,7 +32,7 @@ let processContent () =
   in
   let result =
     Pprintast.string_of_structure
-      (Shared.get_bindings (Some (File_key.SourceFile file)) content)
+      (New_shared.get_bindings (Some (File_key.SourceFile file)) content)
   in
   let formatted =
     let open Ocamlformat_lib in

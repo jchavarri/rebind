@@ -1,4 +1,4 @@
 (executable
  (name rebind)
  (public_name rebind)
- (libraries ocamlformat-lib shared unix))
+ (libraries ocamlformat-lib new_shared unix))
